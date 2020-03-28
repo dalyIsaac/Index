@@ -1,62 +1,47 @@
-import * as controllers from "./controllers";
+import express, { Application } from "express";
 
-import DemoController from "./controllers/DemoController";
-import { Logger } from "@overnightjs/logger";
-import { Server } from "@overnightjs/core";
 import bodyParser from "body-parser";
-import express from "express";
+import directoryPickerRoutes from "./DirectoryPicker/routes";
+import dotenv from "dotenv";
 import path from "path";
 
-class ExpressServer extends Server {
-  private readonly NODE_ENV: string | undefined;
-  private readonly SERVER_START_MSG = "Demo server started on port: ";
-  private readonly DEV_MSG =
-    "Express Server is running in development mode. " +
-    "No front-end content is being served.";
+dotenv.config();
+const PORT = process.env.PORT || 3001;
 
-  constructor(nodeEnv?: string) {
-    super(true);
-    this.NODE_ENV = nodeEnv;
+const serveFrontEndProd = (app: Application) => {
+  const dir = path.join(__dirname, "public/index/");
+  // Set the static and views directory
+  app.set("views", dir);
+  app.use(express.static(dir));
+  // Serve front-end content
+  app.get("*", (req, res) => {
+    res.sendFile("index.html", { root: dir });
+  });
+};
 
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({ extended: true }));
+const DEV_MSG =
+  "Express Server is running in development mode. " +
+  "No front-end content is being served.";
 
-    super.addControllers(new DemoController());
-
-    if (this.NODE_ENV !== "production") {
-      this.app.get("*", (req, res) => res.send(this.DEV_MSG));
-    } else {
-      this.serveFrontEndProd();
-    }
+const serveUI = (app: Application) => {
+  if (process.env.NODE_ENV !== "production") {
+    app.get("*", (req, res) => res.send(DEV_MSG));
+  } else {
+    serveFrontEndProd(app);
   }
+};
 
-  private setupControllers(): void {
-    const ctlrInstances = [];
-    for (const name in controllers) {
-      if (controllers.hasOwnProperty(name)) {
-        let Controller = (controllers as any)[name];
-        ctlrInstances.push(new Controller());
-      }
-    }
-    super.addControllers(ctlrInstances);
-  }
+const app = express();
 
-  public start(port: number): void {
-    this.app.listen(port, () => {
-      Logger.Imp(this.SERVER_START_MSG + port);
-    });
-  }
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-  private serveFrontEndProd(): void {
-    const dir = path.join(__dirname, "public/index/");
-    // Set the static and views directory
-    this.app.set("views", dir);
-    this.app.use(express.static(dir));
-    // Serve front-end content
-    this.app.get("*", (req, res) => {
-      res.sendFile("index.html", { root: dir });
-    });
-  }
-}
+// Routes
+directoryPickerRoutes(app);
 
-export default ExpressServer;
+// Run
+serveUI(app);
+app.listen(PORT, () => {
+  console.log(`Listening on port: ${PORT}`);
+});

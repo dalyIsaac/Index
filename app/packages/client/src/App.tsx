@@ -6,7 +6,7 @@ import logo from "./logo.svg";
 
 function App() {
   useEffect(() => {
-    fetch("/api/say-hello/IsaacDaly")
+    fetch("/api/homedirectory")
       .then(res => res.json())
       .then(data => {
         console.log(data);
