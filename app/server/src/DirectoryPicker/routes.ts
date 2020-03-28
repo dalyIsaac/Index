@@ -1,9 +1,9 @@
-import type { Application } from "express"
-import { getHomeDirectory, getDirectories } from './controller'
+import { getDirs, getHomeDirs } from "./controller";
+import type { Application } from "express";
 
-const directoryPickerRoutes = (app: Application) => {
-    app.route("/api/homedirectory").get(getHomeDirectory)
-    app.route("/api/directories").get(getDirectories)
-}
+const directoryPickerRoutes = (app: Application): void => {
+  app.route("/api/dirs").get(getDirs);
+  app.route("/api/dirs/home").get(getHomeDirs);
+};
 
-export default directoryPickerRoutes
+export default directoryPickerRoutes;

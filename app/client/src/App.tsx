@@ -6,7 +6,14 @@ import logo from "./logo.svg";
 
 function App() {
   useEffect(() => {
-    fetch("/api/homedirectory")
+    fetch("/api/dirs/home")
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(err => console.error(err));
+
+    fetch("/api/dirs")
       .then(res => res.json())
       .then(data => {
         console.log(data);
