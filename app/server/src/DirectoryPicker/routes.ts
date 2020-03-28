@@ -1,8 +1,9 @@
 import type { Application } from "express"
-import { getHomeDirectory } from './controller'
+import { getHomeDirectory, getDirectories } from './controller'
 
 const directoryPickerRoutes = (app: Application) => {
     app.route("/api/homedirectory").get(getHomeDirectory)
+    app.route("/api/directories").get(getDirectories)
 }
 
 export default directoryPickerRoutes

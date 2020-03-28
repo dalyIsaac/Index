@@ -1,23 +1,22 @@
 ### Build BackEnd ###
 
-$server = "packages/server"
-$client = "packages/client"
-$app_root = "../../"
+$server = "server"
+$client = "client"
+$app_root = "../"
 
 # Remove existing production folder
 Remove-Item build -Recurse -Force -ErrorAction Ignore
 
 # Transpile .ts to .js
-cd $server
+Set-Location $server
 tsc --sourceMap false
 
 # Move the backend build
-pwd
-cd $app_root
-mv $server/build build
+Set-Location $app_root
+Move-Item $server/build build
 
 # Copy env file
-cp $server/util/.env build/.env
+Copy-Item $server/util/.env build/.env
 
 ### Bundle FrontEnd ###
 
@@ -25,11 +24,11 @@ cp $server/util/.env build/.env
 mkdir -p build/public/
 
 # Navigate to the react directory
-cd $client
+Set-Location $client
 
 # Build React code
 yarn build
 
 # Move the contains to the build/ dir
-cd $app_root
-mv $client/build build/public/index
+Set-Location $app_root
+Move-Item $client/build build/public/index
