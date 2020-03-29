@@ -11,6 +11,7 @@ node_modules
 
 # production
 build
+dist
 
 # misc
 .DS_Store
@@ -24,6 +25,13 @@ yarn-debug.log*
 yarn-error.log*
 
 .env.local
+
+# TypeScript
+tsconfig.tsbuildinfo
+app/api/**/*.js
+app/api/**/*.js.map
+app/api/**/*.d.ts
+app/api/**/*.d.ts.map
 
 # ==== .NET ====
 *.swp

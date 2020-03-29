@@ -1,8 +1,10 @@
+import { Home } from "@index/api/dirs/home";
 import { homedir } from "os";
+import path from "path";
 import { promises } from "fs";
 
-export const getHomeDirs = (): string => {
-  return homedir();
+export const getHomeDirs = (): Home => {
+  return { homedir: homedir(), os: process.platform, separator: path.sep };
 };
 
 export const getDirs = async (path: string): Promise<string | string[]> => {
