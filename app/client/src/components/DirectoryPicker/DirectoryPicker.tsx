@@ -1,7 +1,8 @@
-import { FileSystem, populate } from "./directory";
+import { IFileSystem, populate } from "./directory";
 import React, { useCallback, useEffect, useReducer } from "react";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
+import FileSystem from "../FileSystem";
 import api from "@index/api/dirs";
 
 // import populate from "./populate";
@@ -31,6 +32,7 @@ const setInitialFileSystem = createAction(
   "initialContents",
   (homedir: string) => ({ payload: homedir }),
 );
+const toggle = createAction("toggle", (id: string) => ({ payload: id }));
 
 const getInitialState = () => ({
   path: "",
@@ -39,7 +41,7 @@ const getInitialState = () => ({
   os: "",
   separator: "",
   differentParent: true,
-  fileSystem: { roots: [], items: {} } as FileSystem,
+  fileSystem: { roots: [], items: {} } as IFileSystem,
 });
 
 const reducer = createReducer(getInitialState(), {
@@ -70,6 +72,10 @@ const reducer = createReducer(getInitialState(), {
   },
   [setInitialFileSystem.type]: (state, { payload }) => {
     populate(state.fileSystem, payload, state.separator);
+  },
+  [toggle.type]: (state, { payload }) => {
+    const item = state.fileSystem.items[payload];
+    item.isExpanded = !item.isExpanded;
   },
 });
 
@@ -103,10 +109,14 @@ const DirectoryPicker = (): JSX.Element => {
     dispatch(setPath(e.currentTarget.value));
   }, []);
 
+  const onToggle = useCallback((id: string) => {
+    dispatch(toggle(id));
+  }, []);
+
   return (
     <div>
       <input type="text" value={state.path} onChange={onChangeText} />
-      {state.dirs}
+      <FileSystem {...state.fileSystem} onToggle={onToggle} />
     </div>
   );
 };
