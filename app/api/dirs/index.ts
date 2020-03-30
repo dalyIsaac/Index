@@ -5,7 +5,7 @@ export const home = homeImport;
 
 const dirs = {
   API: API_DIRS,
-  GET: (path: string) => get<string[] | string>(API_DIRS, { path }),
+  GET: (path: string) => get<string[]>(API_DIRS, { path }),
   home,
 };
 

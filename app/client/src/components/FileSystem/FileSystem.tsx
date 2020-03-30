@@ -5,12 +5,14 @@ import { IFileSystem } from "../DirectoryPicker/directory";
 
 export interface FileSystemProps extends IFileSystem {
   onToggle: (id: string) => void;
+  onGetChildren: (path: string) => void;
 }
 
 const FileSystem = ({
   roots,
   items,
   onToggle,
+  onGetChildren,
 }: FileSystemProps): JSX.Element => {
   const children = useMemo(() => {
     const renderedChildren = [];
@@ -23,12 +25,13 @@ const FileSystem = ({
           node={dir}
           items={items}
           onToggle={onToggle}
+          onGetChildren={onGetChildren}
         />,
       );
     }
 
     return renderedChildren;
-  }, [items, onToggle, roots]);
+  }, [items, onGetChildren, onToggle, roots]);
   return <div>{children}</div>;
 };
 
