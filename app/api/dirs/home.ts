@@ -1,4 +1,4 @@
-import { API_DIRS } from "./index";
+import { API_DIRS } from "./_root";
 import { get } from "../fetch";
 
 export interface Home {

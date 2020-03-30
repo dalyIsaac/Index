@@ -15,15 +15,20 @@ export const getHomeDirs = (
   return res.status(OK).json(homedir);
 };
 
-export const getDirs = async (req: Request, res: Response) => {
+type Dirs = ReturnType<typeof dirs.GET>;
+
+export const getDirs = async (
+  req: Request,
+  res: Response,
+): Promise<Response<Dirs>> => {
   let { path } = req.query;
   if (!path) {
     path = Model.getHomeDirs().homedir;
   }
 
-  const dirs = await Model.getDirs(path);
-  if (typeof dirs === "string") {
-    return res.status(NOT_FOUND).json({ error: dirs });
+  const { dirs, errors } = await Model.getDirs(path);
+  if (errors) {
+    return res.status(NOT_FOUND).json(errors);
   }
-  return res.status(OK).json({ dirs });
+  return res.status(OK).json(dirs);
 };
