@@ -1,7 +1,10 @@
+import { FileSystem, populate } from "./directory";
 import React, { useCallback, useEffect, useReducer } from "react";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
 import api from "@index/api/dirs";
+
+// import populate from "./populate";
 
 const getParent = (path: string, separator: string): string => {
   const pieces = path.split(separator);
@@ -21,6 +24,13 @@ const setError = createAction("error", (error: string | string[]) => ({
 }));
 const setOS = createAction("OS", (os: string) => ({ payload: os }));
 const setDirs = createAction("dirs", (dirs: string[]) => ({ payload: dirs }));
+const updateFileSystem = createAction("contents", (dirs: string[]) => ({
+  payload: dirs,
+}));
+const setInitialFileSystem = createAction(
+  "initialContents",
+  (homedir: string) => ({ payload: homedir }),
+);
 
 const getInitialState = () => ({
   path: "",
@@ -29,6 +39,7 @@ const getInitialState = () => ({
   os: "",
   separator: "",
   differentParent: true,
+  fileSystem: { roots: [], items: {} } as FileSystem,
 });
 
 const reducer = createReducer(getInitialState(), {
@@ -54,6 +65,12 @@ const reducer = createReducer(getInitialState(), {
   [setDirs.type]: (state, { payload }) => {
     state.dirs = payload;
   },
+  [updateFileSystem.type]: (state, { payload }) => {
+    // TODO
+  },
+  [setInitialFileSystem.type]: (state, { payload }) => {
+    populate(state.fileSystem, payload, state.separator);
+  },
 });
 
 const DirectoryPicker = (): JSX.Element => {
@@ -61,19 +78,17 @@ const DirectoryPicker = (): JSX.Element => {
 
   useEffect(() => {
     api.home.GET().then(({ homedir, os, separator }) => {
-      console.log("useEffect");
       dispatch(setOS(os));
       dispatch(setPath(homedir, separator));
+      dispatch(setInitialFileSystem(homedir));
     });
-  }, []);
+  }, [state.separator]);
 
   useEffect(() => {
     if (state.path && state.differentParent) {
-      console.log("Getting more dirs");
       api
         .GET(state.path)
         .then((result) => {
-          console.log(result);
           if (Array.isArray(result)) {
             dispatch(setDirs(result));
           }
@@ -82,10 +97,9 @@ const DirectoryPicker = (): JSX.Element => {
           setError(err);
         });
     }
-  }, [state.differentParent, state.path]);
+  }, [state.differentParent, state.path, state.separator]);
 
   const onChangeText = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("onChangeText");
     dispatch(setPath(e.currentTarget.value));
   }, []);
 
