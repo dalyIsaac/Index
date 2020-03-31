@@ -5,14 +5,15 @@ import {
   getInitialState,
   reducer,
   setError,
+  setIsExpanded,
   setOS,
   setPath,
   toggle,
   updateFileSystem,
 } from "./state";
+import { addSeparator, getParent } from "./directory";
 
 import FileSystem from "../FileSystem";
-import { addSeparator } from "./directory";
 import api from "@index/api/dirs";
 
 const DirectoryPicker = (): JSX.Element => {
@@ -41,7 +42,7 @@ const DirectoryPicker = (): JSX.Element => {
           const dirs = await api.GET(currentPath);
           dispatch(updateFileSystem(currentPath, dirs));
           if (parent) {
-            dispatch(toggle(currentPath));
+            dispatch(setIsExpanded(currentPath));
           }
           parent = currentPath;
         }
@@ -58,18 +59,18 @@ const DirectoryPicker = (): JSX.Element => {
         .GET(newPath)
         .then((dirs) => {
           dispatch(updateFileSystem(newPath, dirs));
-          // Toggles for text input
-          if (state.path === newPath) {
-            dispatch(toggle(newPath));
-          }
         })
         .catch((err) => {
           console.log(err);
           setError(err);
         });
-    } else if (state.path === newPath && node && !node.isExpanded) {
-      // Toggles for text input
-      dispatch(toggle(newPath));
+    } else if (!node) {
+      const parent = getParent(newPath, state.fileSystem.separator);
+      console.log({ parent });
+      if (state.fileSystem.items[parent]) {
+        dispatch(setIsExpanded(parent));
+      }
+      // console.log({ path: state.path, newPath });
     }
   }, [
     state.differentParent,

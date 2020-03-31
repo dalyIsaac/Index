@@ -16,9 +16,17 @@ export const getParent = (path: string, separator: string): string => {
   if (pieces.length === 0) {
     return "";
   }
+  if (pieces[pieces.length - 1] === "") {
+    pieces.pop();
+  }
 
   pieces.pop();
-  return pieces.join(separator);
+
+  let parent = pieces.join(separator);
+  if (parent !== separator) {
+    parent += separator;
+  }
+  return parent;
 };
 
 export const addSeparator = (path: string, separator: string): string => {

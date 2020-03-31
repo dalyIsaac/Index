@@ -1,6 +1,7 @@
 import {
   addRootHandler,
   setErrorHandler,
+  setIsExpandedHandler,
   setOSHandler,
   setPathHandler,
   toggleHandler,
@@ -39,6 +40,13 @@ export const addRoot = createAction("addRoot", (path: string) => ({
 
 export const toggle = createAction("toggle", (id: string) => ({ payload: id }));
 
+export const setIsExpanded = createAction(
+  "setIsExpanded",
+  (path: string, isExpanded = true) => ({
+    payload: { path, isExpanded },
+  }),
+);
+
 export const getInitialState = () => ({
   path: "",
   error: "",
@@ -56,4 +64,5 @@ export const reducer = createReducer(getInitialState(), {
   [setPath.type]: setPathHandler,
   [toggle.type]: toggleHandler,
   [updateFileSystem.type]: updateFileSystemHandler,
+  [setIsExpanded.type]: setIsExpandedHandler,
 });

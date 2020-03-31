@@ -3,6 +3,7 @@ import {
   State,
   addRoot,
   setError,
+  setIsExpanded,
   setOS,
   setPath,
   toggle,
@@ -83,4 +84,11 @@ export const toggleHandler = (
 ) => {
   const item = state.fileSystem.items[payload];
   item.isExpanded = !item.isExpanded;
+};
+
+export const setIsExpandedHandler = (
+  state: State,
+  { payload: { path, isExpanded } }: ReturnType<typeof setIsExpanded>,
+) => {
+  state.fileSystem.items[path].isExpanded = isExpanded;
 };
