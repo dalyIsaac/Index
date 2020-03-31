@@ -1,0 +1,42 @@
+.wrapper {
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.wrapper:hover {
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+.wrapper:active {
+  background-color: rgb(187, 184, 184);
+  cursor: pointer;
+}
+
+.wrapperSelected {
+  background-color: lightgray;
+}
+
+.toggleButton {
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgb(238, 238, 238);
+  background-color: white;
+}
+
+.toggleButton:hover {
+  background-color: lightcyan;
+  border-color: lightblue;
+}
+
+.toggleButton:focus {
+  outline: none;
+}
+
+.label {
+  padding-left: 8px;
+}
+
+.label:hover {
+  cursor: pointer;
+}

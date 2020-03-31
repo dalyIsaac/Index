@@ -2,17 +2,21 @@ import React, { useMemo } from "react";
 
 import FileSystemItem from "./FileSystemItem";
 import { IFileSystem } from "../DirectoryPicker/directory";
+import { Separator } from "./state";
 
 export interface FileSystemProps extends IFileSystem {
-  onToggle: (id: string) => void;
+  onToggle: (path: string) => void;
+  onSelect: (path: string) => void;
   onGetChildren: (path: string) => void;
 }
 
 const FileSystem = ({
   roots,
   items,
+  separator,
   onToggle,
   onGetChildren,
+  onSelect,
 }: FileSystemProps): JSX.Element => {
   const children = useMemo(() => {
     const renderedChildren = [];
@@ -21,18 +25,23 @@ const FileSystem = ({
       const dir = items[key];
       renderedChildren.push(
         <FileSystemItem
-          key={dir.id}
+          key={dir.path}
           node={dir}
           items={items}
           onToggle={onToggle}
           onGetChildren={onGetChildren}
+          onSelect={onSelect}
         />,
       );
     }
 
     return renderedChildren;
-  }, [items, onGetChildren, onToggle, roots]);
-  return <div>{children}</div>;
+  }, [items, onGetChildren, onSelect, onToggle, roots]);
+  return (
+    <div>
+      <Separator.Provider value={separator}>{children}</Separator.Provider>
+    </div>
+  );
 };
 
 export default FileSystem;

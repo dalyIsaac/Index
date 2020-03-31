@@ -1,13 +1,14 @@
 export interface IFileSystem {
   roots: string[];
   items: { [key: string]: IDirectoryItem };
+  separator: string;
 }
 
 export interface IDirectoryItem {
   isExpanded: boolean;
   children?: string[];
   label: string;
-  id: string;
+  path: string;
 }
 
 export const getParent = (path: string, separator: string): string => {
@@ -33,7 +34,7 @@ export const populate = (fs: IFileSystem, path: string, sep: string): void => {
     isExpanded: true,
     children: [],
     label: pieces[0],
-    id: currentPath,
+    path: currentPath,
   };
   fs.roots = [currentPath];
   fs.items[currentPath] = root;
@@ -45,7 +46,7 @@ export const populate = (fs: IFileSystem, path: string, sep: string): void => {
     const newNode: IDirectoryItem = {
       isExpanded: false,
       label: p,
-      id: currentPath,
+      path: currentPath,
     };
     fs.items[currentPath] = newNode;
     node.children = [currentPath];
@@ -73,7 +74,7 @@ export const updateFileSystem = (
     const node: IDirectoryItem = {
       isExpanded: false,
       label: pieces[pieces.length - 1],
-      id: fullPath,
+      path: fullPath,
     };
     fs.items[fullPath] = node;
     parentNode.children.push(fullPath);

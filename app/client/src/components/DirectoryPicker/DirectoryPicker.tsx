@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useReducer } from "react";
 import {
+  SelectedPath,
   getInitialState,
   reducer,
   setError,
@@ -8,7 +9,7 @@ import {
   setPath,
   toggle,
   updateChildren,
-} from "./reducer";
+} from "./state";
 
 import FileSystem from "../FileSystem";
 import api from "@index/api/dirs";
@@ -22,7 +23,7 @@ const DirectoryPicker = (): JSX.Element => {
       dispatch(setPath(homedir, separator));
       dispatch(setInitialFileSystem(homedir));
     });
-  }, [state.separator]);
+  }, [state.fileSystem.separator]);
 
   useEffect(() => {
     if (state.path && state.differentParent) {
@@ -37,7 +38,9 @@ const DirectoryPicker = (): JSX.Element => {
           setError(err);
         });
     }
-  }, [state.differentParent, state.path, state.separator]);
+  }, [state.differentParent, state.path, state.fileSystem.separator]);
+
+  useEffect(() => {}, []);
 
   const onChangeText = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setPath(e.currentTarget.value));
@@ -45,6 +48,10 @@ const DirectoryPicker = (): JSX.Element => {
 
   const onToggle = useCallback((id: string) => {
     dispatch(toggle(id));
+  }, []);
+
+  const onSelect = useCallback((path: string) => {
+    dispatch(setPath(path));
   }, []);
 
   const getChildren = useCallback(async (parentPath: string) => {
@@ -60,11 +67,14 @@ const DirectoryPicker = (): JSX.Element => {
   return (
     <div>
       <input type="text" value={state.path} onChange={onChangeText} />
-      <FileSystem
-        {...state.fileSystem}
-        onToggle={onToggle}
-        onGetChildren={getChildren}
-      />
+      <SelectedPath.Provider value={state.path}>
+        <FileSystem
+          {...state.fileSystem}
+          onToggle={onToggle}
+          onSelect={onSelect}
+          onGetChildren={getChildren}
+        />
+      </SelectedPath.Provider>
     </div>
   );
 };

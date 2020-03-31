@@ -6,6 +6,10 @@ import {
 } from "./directory";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
+import React from "react";
+
+export const SelectedPath = React.createContext("");
+
 export const setPath = createAction(
   "path",
   (path: string, separator?: string) => ({
@@ -37,9 +41,8 @@ export const getInitialState = () => ({
   path: "",
   error: "",
   os: "",
-  separator: "",
   differentParent: true, // used for a search box to get the contents of parents
-  fileSystem: { roots: [], items: {} } as IFileSystem,
+  fileSystem: { roots: [], items: {}, separator: "" } as IFileSystem,
 });
 
 export const reducer = createReducer(getInitialState(), {
@@ -47,11 +50,11 @@ export const reducer = createReducer(getInitialState(), {
     const { path, separator } = action.payload;
 
     if (separator) {
-      state.separator = separator;
+      state.fileSystem.separator = separator;
     }
 
-    const prevParent = getParent(state.path, state.separator);
-    const newParent = getParent(path, state.separator);
+    const prevParent = getParent(state.path, state.fileSystem.separator);
+    const newParent = getParent(path, state.fileSystem.separator);
     state.differentParent = newParent !== prevParent;
 
     state.path = path;
@@ -64,10 +67,15 @@ export const reducer = createReducer(getInitialState(), {
   },
   [updateChildren.type]: (state, { payload }) => {
     const { parent, dirs } = payload;
-    updateFileSystem(state.fileSystem, parent, dirs, state.separator);
+    updateFileSystem(
+      state.fileSystem,
+      parent,
+      dirs,
+      state.fileSystem.separator,
+    );
   },
   [setInitialFileSystem.type]: (state, { payload }) => {
-    populate(state.fileSystem, payload, state.separator);
+    populate(state.fileSystem, payload, state.fileSystem.separator);
   },
   [toggle.type]: (state, { payload }) => {
     const item = state.fileSystem.items[payload];
