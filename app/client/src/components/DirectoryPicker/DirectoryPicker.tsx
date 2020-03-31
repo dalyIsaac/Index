@@ -12,55 +12,58 @@ import {
 } from "./state";
 
 import FileSystem from "../FileSystem";
+import { addSeparator } from "./directory";
 import api from "@index/api/dirs";
-import { getParent } from "./directory";
 
 const DirectoryPicker = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, getInitialState());
 
   useEffect(() => {
+    // Only needs to run at the very start
     if (!state.fileSystem.separator) {
+      // Gets the home directory, operating system, and file system separator
       api.home.GET().then(async ({ homedir, os, separator: sep }) => {
         dispatch(setOS(os));
         dispatch(setPath(homedir, sep));
 
-        const pieces = getParent(homedir, sep).split(sep);
+        const pieces = homedir.split(sep);
         let currentPath = pieces[0];
 
+        // Populates the parent directories of home, and their children
         if (pieces[0] === "") {
           currentPath = "";
         }
         dispatch(addRoot(pieces[0] || sep));
 
+        let parent = "";
         for (let p of pieces) {
           currentPath += p + sep;
           const dirs = await api.GET(currentPath);
           dispatch(updateFileSystem(currentPath, dirs));
+          if (parent) {
+            dispatch(toggle(currentPath));
+          }
+          parent = currentPath;
         }
       });
     }
   }, [state.fileSystem.separator]);
 
   useEffect(() => {
-    if (state.path && state.differentParent) {
-      let parent = getParent(state.path, state.fileSystem.separator);
-      if (parent[parent.length - 1] !== state.fileSystem.separator) {
-        parent += state.fileSystem.separator;
-      }
+    const newPath = addSeparator(state.path, state.fileSystem.separator);
+    const node = state.fileSystem.items[newPath];
 
-      const parentNode = state.fileSystem.items[parent];
-
-      if (parentNode && parentNode.children === undefined) {
-        api
-          .GET(state.path)
-          .then((dirs) => {
-            dispatch(updateFileSystem(parent, dirs));
-            dispatch(toggle(parent));
-          })
-          .catch((err) => {
-            setError(err);
-          });
-      }
+    if (node && node.children === undefined) {
+      api
+        .GET(newPath)
+        .then((dirs) => {
+          dispatch(updateFileSystem(newPath, dirs));
+          dispatch(toggle(newPath));
+        })
+        .catch((err) => {
+          console.log(err);
+          setError(err);
+        });
     }
   }, [
     state.differentParent,

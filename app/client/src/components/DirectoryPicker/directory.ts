@@ -20,3 +20,11 @@ export const getParent = (path: string, separator: string): string => {
   pieces.pop();
   return pieces.join(separator);
 };
+
+export const addSeparator = (path: string, separator: string): string => {
+  let newPath = path;
+  if (path[path.length - 1] !== separator) {
+    newPath += separator;
+  }
+  return newPath;
+};
