@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer } from "react";
+import React, { useCallback, useEffect, useReducer, useRef } from "react";
 import {
   SelectedPath,
   addRoot,
@@ -19,6 +19,47 @@ import api from "@index/api/dirs";
 const DirectoryPicker = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, getInitialState());
 
+  const getChildrenAndParents = useCallback(
+    async (path: string, separator?: string) => {
+      const fs = state.fileSystem;
+
+      let sep = separator;
+      if (!sep) {
+        ({ separator: sep } = state.fileSystem);
+      }
+
+      const pieces = path.split(sep);
+      let currentPath = pieces[0];
+
+      if (pieces[0] === "") {
+        currentPath = "";
+      }
+      if (pieces[pieces.length - 1] === "") {
+        pieces.pop();
+      }
+
+      let parent = "";
+      for (let p of pieces) {
+        currentPath += p;
+        currentPath = addSeparator(currentPath, sep);
+        const currentNode = fs.items[currentPath];
+        if (!currentNode || !currentNode.children) {
+          try {
+            const dirs = await api.GET(currentPath);
+            dispatch(updateFileSystem(currentPath, dirs));
+            if (parent) {
+              dispatch(setIsExpanded(currentPath));
+            }
+            parent = currentPath;
+          } catch (error) {
+            dispatch(setError(error));
+          }
+        }
+      }
+    },
+    [state.fileSystem],
+  );
+
   useEffect(() => {
     // Only needs to run at the very start
     if (!state.fileSystem.separator) {
@@ -28,55 +69,42 @@ const DirectoryPicker = (): JSX.Element => {
         dispatch(setPath(homedir, sep));
 
         const pieces = homedir.split(sep);
-        let currentPath = pieces[0];
-
-        // Populates the parent directories of home, and their children
-        if (pieces[0] === "") {
-          currentPath = "";
-        }
         dispatch(addRoot(pieces[0] || sep));
 
-        let parent = "";
-        for (let p of pieces) {
-          currentPath += p + sep;
-          const dirs = await api.GET(currentPath);
-          dispatch(updateFileSystem(currentPath, dirs));
-          if (parent) {
-            dispatch(setIsExpanded(currentPath));
-          }
-          parent = currentPath;
-        }
+        getChildrenAndParents(homedir, sep);
       });
     }
-  }, [state.fileSystem.separator]);
+  }, [getChildrenAndParents, state.fileSystem.separator]);
+
+  // Used in the next useEffect
+  const previousNewPath = useRef("");
 
   useEffect(() => {
     const newPath = addSeparator(state.path, state.fileSystem.separator);
-    const node = state.fileSystem.items[newPath];
+    if (newPath !== previousNewPath.current) {
+      previousNewPath.current = newPath;
 
-    if (node && node.children === undefined) {
-      api
-        .GET(newPath)
-        .then((dirs) => {
-          dispatch(updateFileSystem(newPath, dirs));
-        })
-        .catch((err) => {
-          console.log(err);
-          setError(err);
-        });
-    } else if (!node) {
-      const parent = getParent(newPath, state.fileSystem.separator);
-      console.log({ parent });
-      if (state.fileSystem.items[parent]) {
-        dispatch(setIsExpanded(parent));
+      const node = state.fileSystem.items[newPath];
+      if (node && node.children === undefined && newPath === state.path) {
+        getChildrenAndParents(newPath);
+      } else if (!node) {
+        const parent = getParent(newPath, state.fileSystem.separator);
+        const parentNode = state.fileSystem.items[parent];
+        if (parentNode) {
+          dispatch(setIsExpanded(parent, true));
+          if (!parentNode.children) {
+            console.log({ parent, newPath });
+            getChildrenAndParents(newPath);
+          }
+        }
       }
-      // console.log({ path: state.path, newPath });
     }
   }, [
     state.differentParent,
     state.path,
     state.fileSystem.separator,
     state.fileSystem.items,
+    getChildrenAndParents,
   ]);
 
   useEffect(() => {}, []);
@@ -93,16 +121,6 @@ const DirectoryPicker = (): JSX.Element => {
     dispatch(setPath(path));
   }, []);
 
-  const getChildren = useCallback(async (parentPath: string) => {
-    try {
-      const dirs = await api.GET(parentPath);
-      dispatch(updateFileSystem(parentPath, dirs));
-    } catch (error) {
-      console.error(error);
-      dispatch(setError(error));
-    }
-  }, []);
-
   return (
     <div>
       <input type="text" value={state.path} onChange={onChangeText} />
@@ -111,7 +129,7 @@ const DirectoryPicker = (): JSX.Element => {
           {...state.fileSystem}
           onToggle={onToggle}
           onSelect={onSelect}
-          onGetChildren={getChildren}
+          onGetChildren={getChildrenAndParents}
         />
       </SelectedPath.Provider>
     </div>
