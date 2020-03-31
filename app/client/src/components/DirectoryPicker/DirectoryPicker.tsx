@@ -58,7 +58,9 @@ const DirectoryPicker = (): JSX.Element => {
         .GET(newPath)
         .then((dirs) => {
           dispatch(updateFileSystem(newPath, dirs));
-          dispatch(toggle(newPath));
+          if (!node.isExpanded) {
+            dispatch(toggle(newPath));
+          }
         })
         .catch((err) => {
           console.log(err);
