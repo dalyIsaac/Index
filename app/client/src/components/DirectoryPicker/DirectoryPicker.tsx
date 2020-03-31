@@ -58,7 +58,8 @@ const DirectoryPicker = (): JSX.Element => {
         .GET(newPath)
         .then((dirs) => {
           dispatch(updateFileSystem(newPath, dirs));
-          if (!node.isExpanded) {
+          // Toggles for text input
+          if (state.path === newPath) {
             dispatch(toggle(newPath));
           }
         })
@@ -66,6 +67,9 @@ const DirectoryPicker = (): JSX.Element => {
           console.log(err);
           setError(err);
         });
+    } else if (state.path === newPath && node && !node.isExpanded) {
+      // Toggles for text input
+      dispatch(toggle(newPath));
     }
   }, [
     state.differentParent,
