@@ -8,7 +8,7 @@ import {
   setOS,
   setPath,
   toggle,
-  updateChildren,
+  updateFileSystem,
 } from "./state";
 
 import FileSystem from "../FileSystem";
@@ -39,7 +39,7 @@ const DirectoryPicker = (): JSX.Element => {
         api
           .GET(state.path)
           .then((dirs) => {
-            dispatch(updateChildren(parent, dirs));
+            dispatch(updateFileSystem(parent, dirs));
             dispatch(toggle(parent));
           })
           .catch((err) => {
@@ -71,7 +71,7 @@ const DirectoryPicker = (): JSX.Element => {
   const getChildren = useCallback(async (parentPath: string) => {
     try {
       const dirs = await api.GET(parentPath);
-      dispatch(updateChildren(parentPath, dirs));
+      dispatch(updateFileSystem(parentPath, dirs));
     } catch (error) {
       console.error(error);
       dispatch(setError(error));

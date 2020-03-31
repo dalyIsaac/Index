@@ -1,8 +1,11 @@
 import {
   IFileSystem,
-  getParent,
-  populate,
-  updateFileSystem,
+  setErrorHandler,
+  setInitialFileSystemHandler,
+  setOSHandler,
+  setPathHandler,
+  toggleHandler,
+  updateFileSystemHandler,
 } from "./directory";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
@@ -23,7 +26,7 @@ export const setError = createAction("error", (error: string | string[]) => ({
 
 export const setOS = createAction("OS", (os: string) => ({ payload: os }));
 
-export const updateChildren = createAction(
+export const updateFileSystem = createAction(
   "children",
   (parent: string, dirs: string[]) => ({
     payload: { parent, dirs },
@@ -45,40 +48,13 @@ export const getInitialState = () => ({
   fileSystem: { roots: [], items: {}, separator: "" } as IFileSystem,
 });
 
+export type State = ReturnType<typeof getInitialState>;
+
 export const reducer = createReducer(getInitialState(), {
-  [setPath.type]: (state, action) => {
-    const { path, separator } = action.payload;
-
-    if (separator) {
-      state.fileSystem.separator = separator;
-    }
-
-    const prevParent = getParent(state.path, state.fileSystem.separator);
-    const newParent = getParent(path, state.fileSystem.separator);
-    state.differentParent = newParent !== prevParent;
-
-    state.path = path;
-  },
-  [setError.type]: (state, { payload }) => {
-    state.error = payload;
-  },
-  [setOS.type]: (state, { payload }) => {
-    state.os = payload;
-  },
-  [updateChildren.type]: (state, { payload }) => {
-    const { parent, dirs } = payload;
-    updateFileSystem(
-      state.fileSystem,
-      parent,
-      dirs,
-      state.fileSystem.separator,
-    );
-  },
-  [setInitialFileSystem.type]: (state, { payload }) => {
-    populate(state.fileSystem, payload, state.fileSystem.separator);
-  },
-  [toggle.type]: (state, { payload }) => {
-    const item = state.fileSystem.items[payload];
-    item.isExpanded = !item.isExpanded;
-  },
+  [setPath.type]: setPathHandler,
+  [setError.type]: setErrorHandler,
+  [setOS.type]: setOSHandler,
+  [updateFileSystem.type]: updateFileSystemHandler,
+  [setInitialFileSystem.type]: setInitialFileSystemHandler,
+  [toggle.type]: toggleHandler,
 });
