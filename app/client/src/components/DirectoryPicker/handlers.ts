@@ -1,6 +1,5 @@
-import { IDirectoryItem, addSeparator, getParent } from "./directory";
 import {
-  State,
+  DirectoryPickerState,
   addRoot,
   setError,
   setIsExpanded,
@@ -9,9 +8,10 @@ import {
   toggle,
   updateFileSystem,
 } from "./state";
+import { IDirectoryItem, addSeparator, getParent } from "./directory";
 
 export const addRootHandler = (
-  { fileSystem: fs }: State,
+  { fileSystem: fs }: DirectoryPickerState,
   { payload: path }: ReturnType<typeof addRoot>,
 ) => {
   const root: IDirectoryItem = {
@@ -25,7 +25,7 @@ export const addRootHandler = (
 };
 
 export const setPathHandler = (
-  state: State,
+  state: DirectoryPickerState,
   { payload: { path, separator } }: ReturnType<typeof setPath>,
 ) => {
   if (separator) {
@@ -37,24 +37,31 @@ export const setPathHandler = (
   state.differentParent = newParent !== prevParent;
 
   state.path = path;
+
+  if (path[path.length - 1] === state.fileSystem.separator) {
+    const node = state.fileSystem.items[path];
+    if (node) {
+      node.isExpanded = true;
+    }
+  }
 };
 
 export const setErrorHandler = (
-  state: State,
+  state: DirectoryPickerState,
   { payload }: ReturnType<typeof setError>,
 ) => {
   state.error = Array.isArray(payload) ? payload.join("\n") : payload;
 };
 
 export const setOSHandler = (
-  state: State,
+  state: DirectoryPickerState,
   { payload }: ReturnType<typeof setOS>,
 ) => {
   state.os = payload;
 };
 
 export const updateFileSystemHandler = (
-  { fileSystem: fs }: State,
+  { fileSystem: fs }: DirectoryPickerState,
   { payload: { parent, dirs } }: ReturnType<typeof updateFileSystem>,
 ) => {
   const { separator: sep } = fs;
@@ -79,7 +86,7 @@ export const updateFileSystemHandler = (
 };
 
 export const toggleHandler = (
-  state: State,
+  state: DirectoryPickerState,
   { payload }: ReturnType<typeof toggle>,
 ) => {
   const item = state.fileSystem.items[payload];
@@ -87,7 +94,7 @@ export const toggleHandler = (
 };
 
 export const setIsExpandedHandler = (
-  state: State,
+  state: DirectoryPickerState,
   { payload: { path, isExpanded } }: ReturnType<typeof setIsExpanded>,
 ) => {
   state.fileSystem.items[path].isExpanded = isExpanded;

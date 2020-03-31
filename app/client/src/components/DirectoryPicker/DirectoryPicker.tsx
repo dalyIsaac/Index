@@ -1,9 +1,7 @@
-import React, { useCallback, useEffect, useReducer, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
   SelectedPath,
   addRoot,
-  getInitialState,
-  reducer,
   setError,
   setIsExpanded,
   setOS,
@@ -12,12 +10,15 @@ import {
   updateFileSystem,
 } from "./state";
 import { addSeparator, getParent } from "./directory";
+import { useDispatch, useSelector } from "react-redux";
 
 import FileSystem from "../FileSystem";
+import { State } from "../../store";
 import api from "@index/api/dirs";
 
 const DirectoryPicker = (): JSX.Element => {
-  const [state, dispatch] = useReducer(reducer, getInitialState());
+  const state = useSelector((state: State) => state.directoryPicker);
+  const dispatch = useDispatch();
 
   const getChildrenAndParents = useCallback(
     async (path: string, separator?: string) => {
@@ -57,7 +58,7 @@ const DirectoryPicker = (): JSX.Element => {
         }
       }
     },
-    [state.fileSystem],
+    [dispatch, state.fileSystem],
   );
 
   useEffect(() => {
@@ -74,14 +75,14 @@ const DirectoryPicker = (): JSX.Element => {
         getChildrenAndParents(homedir, sep);
       });
     }
-  }, [getChildrenAndParents, state.fileSystem.separator]);
+  }, [dispatch, getChildrenAndParents, state.fileSystem.separator]);
 
   // Used in the next useEffect
   const previousNewPath = useRef("");
 
   useEffect(() => {
     const newPath = addSeparator(state.path, state.fileSystem.separator);
-    if (newPath !== previousNewPath.current || newPath === state.path) {
+    if (newPath !== previousNewPath.current) {
       previousNewPath.current = newPath;
 
       const node = state.fileSystem.items[newPath];
@@ -94,7 +95,8 @@ const DirectoryPicker = (): JSX.Element => {
       } else if (!node) {
         const parent = getParent(newPath, state.fileSystem.separator);
         const parentNode = state.fileSystem.items[parent];
-        if (parentNode) {
+
+        if (parentNode && !parentNode.isExpanded) {
           dispatch(setIsExpanded(parent, true));
           if (!parentNode.children) {
             getChildrenAndParents(newPath);
@@ -108,25 +110,35 @@ const DirectoryPicker = (): JSX.Element => {
     state.fileSystem.separator,
     state.fileSystem.items,
     getChildrenAndParents,
+    dispatch,
   ]);
 
   useEffect(() => {}, []);
 
-  const onChangeText = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setPath(e.currentTarget.value));
-  }, []);
+  const onChangeText = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatch(setPath(e.currentTarget.value));
+    },
+    [dispatch],
+  );
 
-  const onToggle = useCallback((id: string) => {
-    dispatch(toggle(id));
-  }, []);
+  const onToggle = useCallback(
+    (id: string) => {
+      dispatch(toggle(id));
+    },
+    [dispatch],
+  );
 
-  const onSelect = useCallback((path: string) => {
-    // The slice is in order to distinguish between keyboard entry, which uses
-    // the final separator to expand. However, a mouse selection doesn't mean
-    // expansion.
-    const newPath = path.slice(0, path.length - 1);
-    dispatch(setPath(newPath));
-  }, []);
+  const onSelect = useCallback(
+    (path: string) => {
+      // The slice is in order to distinguish between keyboard entry, which uses
+      // the final separator to expand. However, a mouse selection doesn't mean
+      // expansion.
+      const newPath = path.slice(0, path.length - 1);
+      dispatch(setPath(newPath));
+    },
+    [dispatch],
+  );
 
   return (
     <div>

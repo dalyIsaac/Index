@@ -8,9 +8,11 @@ import {
   updateFileSystemHandler,
 } from "./handlers";
 
-import { State } from "./state";
+import { DirectoryPickerState } from "./state";
 
-const createState = (state: { [key: string]: any } = {}): State => {
+const createState = (
+  state: { [key: string]: any } = {},
+): DirectoryPickerState => {
   return {
     differentParent: true,
     error: "",

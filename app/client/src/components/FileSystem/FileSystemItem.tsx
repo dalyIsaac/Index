@@ -32,6 +32,7 @@ const FileSystemItem = ({
         renderedChildren.push(
           <div key={dir.path} style={{ paddingLeft: 40 }}>
             <FileSystemItem
+              key={dir.path}
               node={dir}
               items={items}
               onToggle={onToggle}

@@ -55,7 +55,7 @@ export const getInitialState = () => ({
   fileSystem: { roots: [], items: {}, separator: "" } as IFileSystem,
 });
 
-export type State = ReturnType<typeof getInitialState>;
+export type DirectoryPickerState = ReturnType<typeof getInitialState>;
 
 export const reducer = createReducer(getInitialState(), {
   [addRoot.type]: addRootHandler,
