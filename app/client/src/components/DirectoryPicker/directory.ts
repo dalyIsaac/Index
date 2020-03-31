@@ -1,5 +1,6 @@
 import {
   State,
+  addRoot,
   setError,
   setInitialFileSystem,
   setOS,
@@ -31,11 +32,14 @@ export const getParent = (path: string, separator: string): string => {
   return pieces.join(separator);
 };
 
-export const addRoot = (fs: IFileSystem, path: string): void => {
+export const addRootHandler = (
+  { fileSystem: fs }: State,
+  { payload: path }: ReturnType<typeof addRoot>,
+) => {
   const root: IDirectoryItem = {
     path,
     label: path,
-    isExpanded: false,
+    isExpanded: true,
   };
 
   fs.roots.push(path);

@@ -1,5 +1,6 @@
 import {
   IFileSystem,
+  addRootHandler,
   setErrorHandler,
   setInitialFileSystemHandler,
   setOSHandler,
@@ -33,6 +34,10 @@ export const updateFileSystem = createAction(
   }),
 );
 
+export const addRoot = createAction("addRoot", (path: string) => ({
+  payload: path,
+}));
+
 export const setInitialFileSystem = createAction(
   "initialContents",
   (homedir: string) => ({ payload: homedir }),
@@ -51,10 +56,11 @@ export const getInitialState = () => ({
 export type State = ReturnType<typeof getInitialState>;
 
 export const reducer = createReducer(getInitialState(), {
-  [setPath.type]: setPathHandler,
+  [addRoot.type]: addRootHandler,
   [setError.type]: setErrorHandler,
-  [setOS.type]: setOSHandler,
-  [updateFileSystem.type]: updateFileSystemHandler,
   [setInitialFileSystem.type]: setInitialFileSystemHandler,
+  [setOS.type]: setOSHandler,
+  [setPath.type]: setPathHandler,
   [toggle.type]: toggleHandler,
+  [updateFileSystem.type]: updateFileSystemHandler,
 });

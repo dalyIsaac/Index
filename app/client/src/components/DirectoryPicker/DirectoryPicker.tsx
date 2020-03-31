@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useReducer } from "react";
 import {
   SelectedPath,
+  addRoot,
   getInitialState,
   reducer,
   setError,
-  setInitialFileSystem,
   setOS,
   setPath,
   toggle,
@@ -19,11 +19,26 @@ const DirectoryPicker = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, getInitialState());
 
   useEffect(() => {
-    api.home.GET().then(({ homedir, os, separator }) => {
-      dispatch(setOS(os));
-      dispatch(setPath(homedir, separator));
-      dispatch(setInitialFileSystem(homedir));
-    });
+    if (!state.fileSystem.separator) {
+      api.home.GET().then(async ({ homedir, os, separator: sep }) => {
+        dispatch(setOS(os));
+        dispatch(setPath(homedir, sep));
+
+        const pieces = getParent(homedir, sep).split(sep);
+        let currentPath = pieces[0];
+
+        if (pieces[0] === "") {
+          currentPath = "";
+        }
+        dispatch(addRoot(pieces[0] || sep));
+
+        for (let p of pieces) {
+          currentPath += p + sep;
+          const dirs = await api.GET(currentPath);
+          dispatch(updateFileSystem(currentPath, dirs));
+        }
+      });
+    }
   }, [state.fileSystem.separator]);
 
   useEffect(() => {
