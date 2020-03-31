@@ -12,12 +12,17 @@ export interface IDirectoryItem {
 }
 
 export const getParent = (path: string, separator: string): string => {
-  const pieces = path.split(separator);
-  if (pieces.length === 0) {
+  if (path.length === 0 || path === separator) {
     return "";
   }
+
+  const pieces = path.split(separator);
   if (pieces[pieces.length - 1] === "") {
     pieces.pop();
+  }
+
+  if (pieces.length === 1) {
+    return "";
   }
 
   pieces.pop();
