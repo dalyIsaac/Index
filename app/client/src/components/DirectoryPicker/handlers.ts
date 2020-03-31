@@ -38,6 +38,10 @@ export const setPathHandler = (
 
   state.path = path;
 
+  /**
+   * If the path ends with a separator, then the path was updated from
+   * keyboard entry, and the node should be expanded.
+   */
   if (path[path.length - 1] === state.fileSystem.separator) {
     const node = state.fileSystem.items[path];
     if (node) {

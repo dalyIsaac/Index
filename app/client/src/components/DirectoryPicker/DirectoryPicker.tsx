@@ -24,11 +24,13 @@ const DirectoryPicker = (): JSX.Element => {
     async (path: string, separator?: string) => {
       const fs = state.fileSystem;
 
+      // For when the separator hasn't propagated through the state.
       let sep = separator;
       if (!sep) {
         ({ separator: sep } = state.fileSystem);
       }
 
+      // Each piece is a level up of the path.
       const pieces = path.split(sep);
       let currentPath = pieces[0];
 
@@ -44,6 +46,9 @@ const DirectoryPicker = (): JSX.Element => {
         currentPath += p;
         currentPath = addSeparator(currentPath, sep);
         const currentNode = fs.items[currentPath];
+
+        // Only gets if the path doesn't exist, or the children array doesn't
+        // exist.
         if (!currentNode || !currentNode.children) {
           try {
             const dirs = await api.GET(currentPath);
@@ -62,9 +67,9 @@ const DirectoryPicker = (): JSX.Element => {
   );
 
   useEffect(() => {
-    // Only needs to run at the very start
+    // Only needs to run at the very start.
     if (!state.fileSystem.separator) {
-      // Gets the home directory, operating system, and file system separator
+      // Gets the home directory, operating system, and file system separator.
       api.home.GET().then(async ({ homedir, os, separator: sep }) => {
         dispatch(setOS(os));
         dispatch(setPath(homedir, sep));
@@ -77,15 +82,20 @@ const DirectoryPicker = (): JSX.Element => {
     }
   }, [dispatch, getChildrenAndParents, state.fileSystem.separator]);
 
-  // Used in the next useEffect
+  // Used in the next useEffect.
   const previousNewPath = useRef("");
 
   useEffect(() => {
+    // Runs for each update to the path.
     const newPath = addSeparator(state.path, state.fileSystem.separator);
+    // Prevents unnecessary requests, as useEffect will be triggered by various
+    // updates to the state, which aren't path updates.
     if (newPath !== previousNewPath.current) {
       previousNewPath.current = newPath;
 
       const node = state.fileSystem.items[newPath];
+      // Expands if input from keyboard, as mouse input doesn't have a separator
+      // at the end.
       if (node && newPath === state.path) {
         dispatch(setIsExpanded(newPath));
       }
