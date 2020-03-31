@@ -1,4 +1,4 @@
-import { IDirectoryItem, getParent } from "./directory";
+import { IDirectoryItem, addSeparator, getParent } from "./directory";
 import {
   State,
   addRoot,
@@ -36,7 +36,7 @@ export const setPathHandler = (
   const newParent = getParent(path, state.fileSystem.separator);
   state.differentParent = newParent !== prevParent;
 
-  state.path = path;
+  state.path = addSeparator(path, state.fileSystem.separator);
 };
 
 export const setErrorHandler = (
@@ -67,7 +67,7 @@ export const updateFileSystemHandler = (
       pieces.splice(0, 1);
     }
 
-    const fullPath = parent + d + sep;
+    const fullPath = addSeparator(parent + d, sep);
     const node: IDirectoryItem = {
       isExpanded: false,
       label: pieces[pieces.length - 1],

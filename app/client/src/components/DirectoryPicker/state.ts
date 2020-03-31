@@ -42,7 +42,7 @@ export const toggle = createAction("toggle", (id: string) => ({ payload: id }));
 
 export const setIsExpanded = createAction(
   "setIsExpanded",
-  (path: string, isExpanded = true) => ({
+  (path: string, isExpanded: boolean = true) => ({
     payload: { path, isExpanded },
   }),
 );
