@@ -13,6 +13,7 @@ import {
 
 import FileSystem from "../FileSystem";
 import api from "@index/api/dirs";
+import { getParent } from "./directory";
 
 const DirectoryPicker = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, getInitialState());
@@ -27,18 +28,31 @@ const DirectoryPicker = (): JSX.Element => {
 
   useEffect(() => {
     if (state.path && state.differentParent) {
-      api
-        .GET(state.path)
-        .then((result) => {
-          if (Array.isArray(result)) {
-            // dispatch(setDirs(result));
-          }
-        })
-        .catch((err) => {
-          setError(err);
-        });
+      let parent = getParent(state.path, state.fileSystem.separator);
+      if (parent[parent.length - 1] !== state.fileSystem.separator) {
+        parent += state.fileSystem.separator;
+      }
+
+      const parentNode = state.fileSystem.items[parent];
+
+      if (parentNode && parentNode.children === undefined) {
+        api
+          .GET(state.path)
+          .then((dirs) => {
+            dispatch(updateChildren(parent, dirs));
+            dispatch(toggle(parent));
+          })
+          .catch((err) => {
+            setError(err);
+          });
+      }
     }
-  }, [state.differentParent, state.path, state.fileSystem.separator]);
+  }, [
+    state.differentParent,
+    state.path,
+    state.fileSystem.separator,
+    state.fileSystem.items,
+  ]);
 
   useEffect(() => {}, []);
 
