@@ -81,11 +81,15 @@ const DirectoryPicker = (): JSX.Element => {
 
   useEffect(() => {
     const newPath = addSeparator(state.path, state.fileSystem.separator);
-    if (newPath !== previousNewPath.current) {
+    if (newPath !== previousNewPath.current || newPath === state.path) {
       previousNewPath.current = newPath;
 
       const node = state.fileSystem.items[newPath];
-      if (node && node.children === undefined && newPath === state.path) {
+      if (node && newPath === state.path) {
+        dispatch(setIsExpanded(newPath));
+      }
+
+      if (node && node.children === undefined) {
         getChildrenAndParents(newPath);
       } else if (!node) {
         const parent = getParent(newPath, state.fileSystem.separator);
@@ -93,7 +97,6 @@ const DirectoryPicker = (): JSX.Element => {
         if (parentNode) {
           dispatch(setIsExpanded(parent, true));
           if (!parentNode.children) {
-            console.log({ parent, newPath });
             getChildrenAndParents(newPath);
           }
         }
@@ -118,7 +121,11 @@ const DirectoryPicker = (): JSX.Element => {
   }, []);
 
   const onSelect = useCallback((path: string) => {
-    dispatch(setPath(path));
+    // The slice is in order to distinguish between keyboard entry, which uses
+    // the final separator to expand. However, a mouse selection doesn't mean
+    // expansion.
+    const newPath = path.slice(0, path.length - 1);
+    dispatch(setPath(newPath));
   }, []);
 
   return (
