@@ -36,7 +36,7 @@ export const setPathHandler = (
   const newParent = getParent(path, state.fileSystem.separator);
   state.differentParent = newParent !== prevParent;
 
-  state.path = addSeparator(path, state.fileSystem.separator);
+  state.path = path;
 };
 
 export const setErrorHandler = (

@@ -83,14 +83,14 @@ describe("setPathHandler", () => {
 
     const expected = createState({
       fileSystem: { separator: "/" },
-      path: "/home/brad/",
+      path: "/home/brad",
       differentParent: false,
     });
 
     expect(state).toStrictEqual(expected);
   });
 
-  test("Same parent", () => {
+  test("Different parent", () => {
     const state = createState({ path: "/home/paul/", differentParent: false });
     setPathHandler(state, {
       payload: { path: "/otherhome/brad", separator: "/" },
@@ -99,7 +99,7 @@ describe("setPathHandler", () => {
 
     const expected = createState({
       fileSystem: { separator: "/" },
-      path: "/otherhome/brad/",
+      path: "/otherhome/brad",
       differentParent: true,
     });
 
