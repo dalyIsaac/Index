@@ -1,15 +1,14 @@
 import {
-  IFileSystem,
   addRootHandler,
   setErrorHandler,
-  setInitialFileSystemHandler,
   setOSHandler,
   setPathHandler,
   toggleHandler,
   updateFileSystemHandler,
-} from "./directory";
+} from "./handlers";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
+import { IFileSystem } from "./directory";
 import React from "react";
 
 export const SelectedPath = React.createContext("");
@@ -38,11 +37,6 @@ export const addRoot = createAction("addRoot", (path: string) => ({
   payload: path,
 }));
 
-export const setInitialFileSystem = createAction(
-  "initialContents",
-  (homedir: string) => ({ payload: homedir }),
-);
-
 export const toggle = createAction("toggle", (id: string) => ({ payload: id }));
 
 export const getInitialState = () => ({
@@ -58,7 +52,6 @@ export type State = ReturnType<typeof getInitialState>;
 export const reducer = createReducer(getInitialState(), {
   [addRoot.type]: addRootHandler,
   [setError.type]: setErrorHandler,
-  [setInitialFileSystem.type]: setInitialFileSystemHandler,
   [setOS.type]: setOSHandler,
   [setPath.type]: setPathHandler,
   [toggle.type]: toggleHandler,
