@@ -2,12 +2,10 @@ import React, { useCallback, useEffect, useRef } from "react";
 import {
   SelectedPath,
   addRoot,
-  setError,
   setIsExpanded,
   setOS,
   setPath,
   toggle,
-  updateFileSystem,
 } from "./state";
 import { addSeparator, getParent } from "./directory";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,53 +13,13 @@ import { useDispatch, useSelector } from "react-redux";
 import FileSystem from "../FileSystem";
 import { State } from "../../store";
 import api from "@index/api/dirs";
+import useGetChildrenAndParents from "./useGetChildrenAndParents";
 
 const DirectoryPicker = (): JSX.Element => {
   const state = useSelector((state: State) => state.directoryPicker);
   const dispatch = useDispatch();
 
-  const getChildrenAndParents = useCallback(
-    async (path: string, separator?: string) => {
-      const fs = state.fileSystem;
-
-      // For when the separator hasn't propagated through the state.
-      let sep = separator;
-      if (!sep) {
-        ({ separator: sep } = state.fileSystem);
-      }
-
-      // Each piece is a level up of the path.
-      const pieces = path.split(sep);
-      let currentPath = "";
-
-      if (pieces[pieces.length - 1] === "") {
-        pieces.pop();
-      }
-
-      let parent = "";
-      for (let p of pieces) {
-        currentPath += p;
-        currentPath = addSeparator(currentPath, sep);
-        const currentNode = fs.items[currentPath];
-
-        // Only gets if the path doesn't exist, or the children array doesn't
-        // exist.
-        if (!currentNode || !currentNode.children) {
-          try {
-            const dirs = await api.GET(currentPath);
-            dispatch(updateFileSystem(currentPath, dirs));
-            if (parent) {
-              dispatch(setIsExpanded(currentPath));
-            }
-            parent = currentPath;
-          } catch (error) {
-            dispatch(setError(error));
-          }
-        }
-      }
-    },
-    [dispatch, state.fileSystem],
-  );
+  const getChildrenAndParents = useGetChildrenAndParents();
 
   const alreadyRun = useRef(false);
   useEffect(() => {

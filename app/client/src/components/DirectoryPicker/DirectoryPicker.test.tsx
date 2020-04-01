@@ -5,21 +5,23 @@ import DirectoryPicker from "./DirectoryPicker";
 import EnzymeAdapter from "enzyme-adapter-react-16";
 import { Provider } from "react-redux";
 import React from "react";
-// eslint-disable-next-line import/first
 import api from "@index/api/dirs";
 import { initializeState } from "../../store";
+import useGetChildrenAndParents from "./useGetChildrenAndParents";
 
 jest.mock("@index/api/dirs");
+jest.mock("./useGetChildrenAndParents");
 
 Enzyme.configure({ adapter: new EnzymeAdapter() });
 
 describe("<DirectoryPicker />", () => {
-  const getWrapper = (store: ReturnType<typeof initializeState>) =>
-    mount(
+  const getWrapper = (store: ReturnType<typeof initializeState>) => {
+    return mount(
       <Provider store={store}>
         <DirectoryPicker />
       </Provider>,
     );
+  };
 
   test("Initial render in Windows", async () => {
     const mockStore = initializeState();
@@ -36,6 +38,10 @@ describe("<DirectoryPicker />", () => {
       os,
     });
 
+    const getChildrenAndParents = jest.fn();
+    //@ts-ignore
+    useGetChildrenAndParents.mockReturnValue(getChildrenAndParents);
+
     const wrapper = await getWrapper(mockStore);
     wrapper.update();
 
@@ -47,9 +53,13 @@ describe("<DirectoryPicker />", () => {
       setPath(homedir, separator),
     );
     expect(mockStore.dispatch).toHaveBeenNthCalledWith(3, addRoot("C:"));
-  });
 
-  // TODO: Test getChildrenAndParents with the expected inputs from above
+    expect(getChildrenAndParents).toHaveBeenNthCalledWith(
+      1,
+      homedir,
+      separator,
+    );
+  });
 
   test("Initial render in *NIX", async () => {
     const mockStore = initializeState();
@@ -81,5 +91,5 @@ describe("<DirectoryPicker />", () => {
     expect(mockStore.dispatch).toHaveBeenNthCalledWith(3, addRoot("/"));
   });
 
-  // TODO: Test getChildrenAndParents with the expected inputs from above
+  // TODO: Test second useEffect
 });
