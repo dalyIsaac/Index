@@ -32,11 +32,8 @@ const DirectoryPicker = (): JSX.Element => {
 
       // Each piece is a level up of the path.
       const pieces = path.split(sep);
-      let currentPath = pieces[0];
+      let currentPath = "";
 
-      if (pieces[0] === "") {
-        currentPath = "";
-      }
       if (pieces[pieces.length - 1] === "") {
         pieces.pop();
       }
@@ -66,9 +63,10 @@ const DirectoryPicker = (): JSX.Element => {
     [dispatch, state.fileSystem],
   );
 
+  const alreadyRun = useRef(false);
   useEffect(() => {
     // Only needs to run at the very start.
-    if (!state.fileSystem.separator) {
+    if (!alreadyRun.current) {
       // Gets the home directory, operating system, and file system separator.
       api.home.GET().then(async ({ homedir, os, separator: sep }) => {
         dispatch(setOS(os));
@@ -79,6 +77,7 @@ const DirectoryPicker = (): JSX.Element => {
 
         getChildrenAndParents(homedir, sep);
       });
+      alreadyRun.current = true;
     }
   }, [dispatch, getChildrenAndParents, state.fileSystem.separator]);
 
