@@ -69,6 +69,7 @@ export const updateFileSystemHandler = (
   { payload: { parent, dirs } }: ReturnType<typeof updateFileSystem>,
 ) => {
   const { separator: sep } = fs;
+  parent = addSeparator(parent, fs.separator);
   const parentNode = fs.items[parent];
   parentNode.children = [];
 

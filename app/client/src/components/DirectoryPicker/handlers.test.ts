@@ -225,6 +225,51 @@ describe("updateFileSystemHandler", () => {
         }),
       );
     });
+
+    test("No ending separator for the parent", () => {
+      const state = createState({
+        fileSystem: {
+          items: {
+            "/": { label: "/", path: "/", isExpanded: true },
+            "/home/": {
+              isExpanded: false,
+              label: "home",
+              path: "/home/",
+            },
+          },
+          roots: ["/"],
+          separator: "/",
+        },
+      });
+
+      updateFileSystemHandler(state, {
+        payload: { parent: "/home", dirs: ["username"] },
+        type: "children",
+      });
+
+      expect(state).toStrictEqual(
+        createState({
+          fileSystem: {
+            items: {
+              "/": { label: "/", path: "/", isExpanded: true },
+              "/home/": {
+                isExpanded: false,
+                label: "home",
+                path: "/home/",
+                children: ["/home/username/"],
+              },
+              "/home/username/": {
+                label: "username",
+                path: "/home/username/",
+                isExpanded: false,
+              },
+            },
+            roots: ["/"],
+            separator: "/",
+          },
+        }),
+      );
+    });
   });
 
   describe("Windows", () => {
@@ -293,6 +338,61 @@ describe("updateFileSystemHandler", () => {
 
       updateFileSystemHandler(state, {
         payload: { parent: "C:\\Users\\", dirs: ["username"] },
+        type: "children",
+      });
+
+      expect(state).toStrictEqual(
+        createState({
+          fileSystem: {
+            items: {
+              "C:\\": {
+                label: "C:",
+                path: "C:\\",
+                isExpanded: true,
+                children: ["C:\\Users\\", "C:\\Windows\\"],
+              },
+              "C:\\Users\\": {
+                label: "Users",
+                path: "C:\\Users\\",
+                isExpanded: false,
+                children: ["C:\\Users\\username\\"],
+              },
+              "C:\\Users\\username\\": {
+                label: "username",
+                path: "C:\\Users\\username\\",
+                isExpanded: false,
+              },
+            },
+            roots: ["C:\\"],
+            separator: "\\",
+          },
+        }),
+      );
+    });
+
+    test("No ending separator for the parent", () => {
+      const state = createState({
+        fileSystem: {
+          items: {
+            "C:\\": {
+              label: "C:",
+              path: "C:\\",
+              isExpanded: true,
+              children: ["C:\\Users\\", "C:\\Windows\\"],
+            },
+            "C:\\Users\\": {
+              label: "Users",
+              path: "C:\\Users\\",
+              isExpanded: false,
+            },
+          },
+          roots: ["C:\\"],
+          separator: "\\",
+        },
+      });
+
+      updateFileSystemHandler(state, {
+        payload: { parent: "C:\\Users", dirs: ["username"] },
         type: "children",
       });
 
