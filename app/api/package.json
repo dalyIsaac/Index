@@ -6,9 +6,6 @@
   "scripts": {
     "build": "tsc"
   },
-  "files": [
-    "dist/**/*"
-  ],
   "dependencies": {
     "wretch": "^1.7.1"
   }
