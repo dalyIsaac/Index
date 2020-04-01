@@ -8,7 +8,7 @@ import {
   updateFileSystemHandler,
 } from "./handlers";
 
-import { DirectoryPickerState } from "./state";
+import { DirectoryPickerState } from "./reducers";
 
 const createState = (
   state: { [key: string]: any } = {},

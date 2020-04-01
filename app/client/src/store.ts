@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
-import { reducer as directoryPicker } from "./components/DirectoryPicker/state";
+import { reducer as directoryPicker } from "./components/DirectoryPicker/reducers";
 
 const initializeReducer = () => combineReducers({ directoryPicker });
 

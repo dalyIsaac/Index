@@ -6,9 +6,9 @@
     }
   ],
   "files.exclude": {
-    "app/api/**/*.d.ts": true,
-    "app/api/**/*.d.ts.map": true,
-    "app/api/**/*.js": true,
-    "app/api/**/*.js.map": true
+    "app/**/*.d.ts": true,
+    "app/**/*.d.ts.map": true,
+    "app/**/*.js": true,
+    "app/**/*.js.map": true
   }
 }

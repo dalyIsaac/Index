@@ -28,10 +28,10 @@ yarn-error.log*
 
 # TypeScript
 tsconfig.tsbuildinfo
-app/api/**/*.js
-app/api/**/*.js.map
-app/api/**/*.d.ts
-app/api/**/*.d.ts.map
+app/**/*.js
+app/**/*.js.map
+app/**/*.d.ts
+app/**/*.d.ts.map
 
 # ==== .NET ====
 *.swp

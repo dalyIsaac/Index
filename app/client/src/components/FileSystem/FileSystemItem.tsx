@@ -1,7 +1,7 @@
-import { IDirectoryItem, IFileSystem } from "../DirectoryPicker/directory";
+import { IDirectoryItem, IFileSystem } from "../DirectoryPicker/state";
 import React, { useCallback, useContext, useMemo } from "react";
 
-import { SelectedPath } from "../DirectoryPicker/state";
+import { SelectedPath } from "../DirectoryPicker/reducers";
 import { Separator } from "./state";
 import styles from "./FileSystemItem.module.css";
 

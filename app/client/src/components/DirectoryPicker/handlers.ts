@@ -7,8 +7,10 @@ import {
   setPath,
   toggle,
   updateFileSystem,
-} from "./state";
-import { IDirectoryItem, addSeparator, getParent } from "./directory";
+} from "./reducers";
+import { addSeparator, getParent } from "@index/helpers";
+
+import { IDirectoryItem } from "./state";
 
 export const addRootHandler = (
   { fileSystem: fs }: DirectoryPickerState,

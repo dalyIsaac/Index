@@ -1,5 +1,5 @@
 import Enzyme, { mount } from "enzyme";
-import { addRoot, setOS, setPath } from "./state";
+import { addRoot, setOS, setPath } from "./reducers";
 
 import DirectoryPicker from "./DirectoryPicker";
 import EnzymeAdapter from "enzyme-adapter-react-16";

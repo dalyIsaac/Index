@@ -1,4 +1,4 @@
-import { addSeparator, getParent } from "./directory";
+import { addSeparator, getParent } from "index";
 
 describe("getParent", () => {
   describe("*NIX", () => {

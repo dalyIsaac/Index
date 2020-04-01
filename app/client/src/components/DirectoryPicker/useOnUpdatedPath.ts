@@ -1,8 +1,8 @@
-import { addSeparator, getParent } from "./directory";
+import { addSeparator, getParent } from "@index/helpers";
 import { useDispatch, useSelector } from "react-redux";
 
 import { State } from "../../store";
-import { setIsExpanded } from "./state";
+import { setIsExpanded } from "./reducers";
 import useGetChildrenAndParents from "./useGetChildrenAndParents";
 import { useRef } from "react";
 

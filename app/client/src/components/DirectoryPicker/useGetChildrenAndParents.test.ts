@@ -1,7 +1,7 @@
 import * as redux from "react-redux";
 
 import { act, renderHook } from "@testing-library/react-hooks";
-import { setIsExpanded, updateFileSystem } from "./state";
+import { setIsExpanded, updateFileSystem } from "./reducers";
 
 import api from "@index/api/dirs";
 import { initializeState } from "../../store";

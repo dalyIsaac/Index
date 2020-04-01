@@ -1,5 +1,5 @@
 {
-  "name": "@index/api",
+  "name": "@index/helpers",
   "version": "0.1.0",
   "license": "MIT",
   "private": true,
@@ -9,7 +9,7 @@
   "files": [
     "dist/**/*"
   ],
-  "dependencies": {
-    "wretch": "^1.7.1"
+  "devDependencies": {
+    "jest": "^25.2.4"
   }
 }

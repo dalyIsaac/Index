@@ -1,8 +1,8 @@
-import { setError, setIsExpanded, updateFileSystem } from "./state";
+import { addSeparator, removeEmptyTrailing } from "@index/helpers";
+import { setError, setIsExpanded, updateFileSystem } from "./reducers";
 import { useDispatch, useSelector } from "react-redux";
 
 import { State } from "../../store";
-import { addSeparator } from "./directory";
 import api from "@index/api/dirs";
 
 const useGetChildrenAndParents = () => {
@@ -19,12 +19,8 @@ const useGetChildrenAndParents = () => {
     }
 
     // Each piece is a level up of the path.
-    const pieces = path.split(sep);
+    const pieces = removeEmptyTrailing(path.split(sep));
     let currentPath = "";
-
-    if (pieces[pieces.length - 1] === "") {
-      pieces.pop();
-    }
 
     let parent = "";
     for (let p of pieces) {

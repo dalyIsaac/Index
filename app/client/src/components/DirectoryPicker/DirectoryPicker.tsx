@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { SelectedPath, addRoot, setOS, setPath, toggle } from "./state";
+import { SelectedPath, addRoot, setOS, setPath, toggle } from "./reducers";
 import { useDispatch, useSelector } from "react-redux";
 
 import FileSystem from "../FileSystem";

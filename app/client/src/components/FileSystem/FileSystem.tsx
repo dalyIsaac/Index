@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
 import FileSystemItem from "./FileSystemItem";
-import { IFileSystem } from "../DirectoryPicker/directory";
+import { IFileSystem } from "../DirectoryPicker/state";
 import { Separator } from "./state";
 
 export interface FileSystemProps extends IFileSystem {

@@ -7,7 +7,7 @@ import {
   setOS,
   setPath,
   updateFileSystem,
-} from "./state";
+} from "./reducers";
 
 import { initializeState } from "../../store";
 import useGetChildrenAndParents from "./useGetChildrenAndParents";

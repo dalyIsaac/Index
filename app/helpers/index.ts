@@ -1,30 +1,20 @@
-export interface IFileSystem {
-  roots: string[];
-  items: { [key: string]: IDirectoryItem };
-  separator: string;
-}
-
-export interface IDirectoryItem {
-  isExpanded: boolean;
-
-  /**
-   * Stores the paths of the children. If this isn't defined, then the children
-   * haven't been retrieved.
-   */
-  children?: string[];
-  label: string;
-  path: string;
-}
+/**
+ * Removes the last item if `item === ""`.
+ * @param pieces
+ */
+export const removeEmptyTrailing = (pieces: string[]): string[] => {
+  if (pieces[pieces.length - 1] === "") {
+    pieces.pop();
+  }
+  return pieces;
+};
 
 export const getParent = (path: string, separator: string): string => {
   if (path.length === 0 || path === separator) {
     return "";
   }
 
-  const pieces = path.split(separator);
-  if (pieces[pieces.length - 1] === "") {
-    pieces.pop();
-  }
+  const pieces = removeEmptyTrailing(path.split(separator));
 
   if (pieces.length === 1) {
     return "";
