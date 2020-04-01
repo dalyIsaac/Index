@@ -16,6 +16,7 @@ export const addRootHandler = (
   { fileSystem: fs }: DirectoryPickerState,
   { payload: path }: ReturnType<typeof addRoot>,
 ) => {
+  path = addSeparator(path, fs.separator);
   const root: IDirectoryItem = {
     path,
     label: path,

@@ -73,6 +73,29 @@ describe("addRootHandler", () => {
       }),
     );
   });
+
+  test("Add a Windows root with no trailing separator", () => {
+    const state = createState({
+      fileSystem: { separator: "\\" },
+    });
+
+    addRootHandler(state, {
+      payload: "C:",
+      type: "addRoot",
+    });
+
+    expect(state).toStrictEqual(
+      createState({
+        fileSystem: {
+          items: {
+            "C:\\": { isExpanded: true, label: "C:\\", path: "C:\\" },
+          },
+          roots: ["C:\\"],
+          separator: "\\",
+        },
+      }),
+    );
+  });
 });
 
 describe("setPathHandler", () => {
