@@ -6,7 +6,6 @@ import { Request, Response } from "express";
 import settings from "@index/api/settings";
 
 type GetSettings = ReturnType<typeof settings["GET"]>;
-type PostSettings = ReturnType<typeof settings["POST"]>;
 
 export const getSettings = async (
   req: Request,
@@ -15,6 +14,8 @@ export const getSettings = async (
   const result = await Model.getSettings();
   return res.status(OK).json(result);
 };
+
+type PostSettings = ReturnType<typeof settings["POST"]>;
 
 export const postSettings = async (
   req: Request,
@@ -25,4 +26,14 @@ export const postSettings = async (
     return res.status(BAD_REQUEST).json(result);
   }
   return res.status(OK).json(result);
+};
+
+type GetDirectorySettings = ReturnType<typeof settings["directory"]["GET"]>;
+
+export const getDirectory = async (
+  req: Request,
+  res: Response,
+): Promise<Response<GetDirectorySettings>> => {
+  const dir = await Model.getDirectory();
+  return res.status(OK).json(dir);
 };

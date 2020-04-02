@@ -20,16 +20,20 @@ const DirectoryPicker = (): JSX.Element => {
   useEffect(() => {
     // Only needs to run at the very start.
     if (!alreadyRun.current) {
-      // Gets the home directory, operating system, and file system separator.
-      api.dirs.home.GET().then(async ({ homedir, os, separator: sep }) => {
-        dispatch(setOS(os));
-        dispatch(setPath(homedir, sep));
+      // Gets the current set directory or the home directory, operating
+      // system, and file system separator.
+      api.settings.directory.GET().then(async (dir) => {
+        api.dirs.home.GET().then(async ({ os, separator: sep }) => {
+          dispatch(setOS(os));
+          dispatch(setPath(dir, sep));
 
-        const pieces = homedir.split(sep);
-        dispatch(addRoot(pieces[0] || sep));
+          const pieces = dir.split(sep);
+          dispatch(addRoot(pieces[0] || sep));
 
-        getChildrenAndParents(homedir, sep);
+          getChildrenAndParents(dir, sep);
+        });
       });
+
       alreadyRun.current = true;
     }
   }, [dispatch, getChildrenAndParents, state.fileSystem.separator]);

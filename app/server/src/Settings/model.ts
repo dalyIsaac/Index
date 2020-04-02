@@ -52,3 +52,14 @@ export const postSettings = async (
 
   return errors;
 };
+
+export const getDirectory = async (): Promise<string> => {
+  const settings = await getSettings();
+  const { value } = settings["directory"];
+
+  // For initial startup
+  if (!value) {
+    return homedir();
+  }
+  return value;
+};
