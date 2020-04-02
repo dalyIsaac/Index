@@ -11,6 +11,7 @@ node_modules
 
 # production
 build
+dist
 
 # misc
 .DS_Store
@@ -25,6 +26,13 @@ yarn-error.log*
 
 .env.local
 
+# TypeScript
+tsconfig.tsbuildinfo
+app/**/*.js
+app/**/*.js.map
+app/**/*.d.ts
+app/**/*.d.ts.map
+
 # ==== .NET ====
 *.swp
 *.*~
@@ -32,9 +40,6 @@ project.lock.json
 .DS_Store
 *.pyc
 nupkg/
-
-# Visual Studio Code
-.vscode
 
 # Rider
 .idea

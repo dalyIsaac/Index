@@ -1,0 +1,14 @@
+{
+  "editor.formatOnSave": true,
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "files.exclude": {
+    "app/**/*.d.ts": true,
+    "app/**/*.d.ts.map": true,
+    "app/**/*.js": true,
+    "app/**/*.js.map": true
+  }
+}

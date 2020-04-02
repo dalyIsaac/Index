@@ -1,0 +1,28 @@
+{
+  "include": ["./src*.ts"],
+  "exclude": ["./src*.test.ts", "./src/public"],
+  "extends": "../tsconfig.json",
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "build",
+    "importHelpers": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

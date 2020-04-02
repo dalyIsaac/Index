@@ -1,0 +1,50 @@
+.itemWrapper {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.wrapper {
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.wrapper:hover {
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+.wrapper:active {
+  background-color: rgb(187, 184, 184);
+  cursor: pointer;
+}
+
+.wrapperSelected {
+  background-color: lightgray;
+}
+
+.toggleButton {
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgb(238, 238, 238);
+  background-color: white;
+}
+
+.toggleButton:hover {
+  background-color: lightcyan;
+  border-color: lightblue;
+}
+
+.toggleButton:focus {
+  outline: none;
+}
+
+.label {
+  padding-left: 8px;
+}
+
+.label:hover {
+  cursor: pointer;
+}
