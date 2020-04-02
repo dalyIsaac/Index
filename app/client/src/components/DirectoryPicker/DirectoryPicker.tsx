@@ -74,21 +74,23 @@ const DirectoryPicker = (): JSX.Element => {
   }, [state.path]);
 
   return (
-    <div>
+    <div className={styles.wrapper}>
       <div className={styles.pathWrapper}>
         <input type="text" value={state.path} onChange={onChangeText} />
         <button className={styles.selectButton} onClick={onSelect}>
           Select
         </button>
       </div>
-      <SelectedPath.Provider value={state.path}>
-        <FileSystem
-          {...state.fileSystem}
-          onToggle={onToggle}
-          onClick={onClick}
-          onGetChildren={getChildrenAndParents}
-        />
-      </SelectedPath.Provider>
+      <div className={styles.fileSystem}>
+        <SelectedPath.Provider value={state.path}>
+          <FileSystem
+            {...state.fileSystem}
+            onToggle={onToggle}
+            onClick={onClick}
+            onGetChildren={getChildrenAndParents}
+          />
+        </SelectedPath.Provider>
+      </div>
     </div>
   );
 };
