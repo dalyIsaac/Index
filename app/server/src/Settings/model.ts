@@ -4,7 +4,7 @@ import { addSeparator } from "@index/helpers";
 import { homedir } from "os";
 import path from "path";
 import { promises } from "fs";
-import { validateData } from "./schema";
+import { validateData } from "./validate";
 
 export const getSettings = async (): Promise<SettingsResult> => {
   const fullPath = addSeparator(homedir(), path.sep) + ".index-settings.json";
