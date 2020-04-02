@@ -6,7 +6,7 @@ import { Separator } from "./state";
 
 export interface FileSystemProps extends IFileSystem {
   onToggle: (path: string) => void;
-  onSelect: (path: string) => void;
+  onClick: (path: string) => void;
   onGetChildren: (path: string) => void;
 }
 
@@ -16,7 +16,7 @@ const FileSystem = ({
   separator,
   onToggle,
   onGetChildren,
-  onSelect,
+  onClick,
 }: FileSystemProps): JSX.Element => {
   const children = useMemo(() => {
     const renderedChildren = [];
@@ -30,13 +30,13 @@ const FileSystem = ({
           items={items}
           onToggle={onToggle}
           onGetChildren={onGetChildren}
-          onSelect={onSelect}
+          onClick={onClick}
         />,
       );
     }
 
     return renderedChildren;
-  }, [items, onGetChildren, onSelect, onToggle, roots]);
+  }, [items, onGetChildren, onClick, onToggle, roots]);
   return (
     <div>
       <Separator.Provider value={separator}>{children}</Separator.Provider>

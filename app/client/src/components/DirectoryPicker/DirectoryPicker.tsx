@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import FileSystem from "../FileSystem";
 import { State } from "../../store";
-import api from "@index/api/dirs";
+import api from "@index/api";
+import styles from "./DirectoryPicker.module.css";
 import useGetChildrenAndParents from "./useGetChildrenAndParents";
 import useOnUpdatedPath from "./useOnUpdatedPath";
 
@@ -20,7 +21,7 @@ const DirectoryPicker = (): JSX.Element => {
     // Only needs to run at the very start.
     if (!alreadyRun.current) {
       // Gets the home directory, operating system, and file system separator.
-      api.home.GET().then(async ({ homedir, os, separator: sep }) => {
+      api.dirs.home.GET().then(async ({ homedir, os, separator: sep }) => {
         dispatch(setOS(os));
         dispatch(setPath(homedir, sep));
 
@@ -53,7 +54,7 @@ const DirectoryPicker = (): JSX.Element => {
     [dispatch],
   );
 
-  const onSelect = useCallback(
+  const onClick = useCallback(
     (path: string) => {
       // The slice is in order to distinguish between keyboard entry, which uses
       // the final separator to expand. However, a mouse selection doesn't mean
@@ -64,14 +65,23 @@ const DirectoryPicker = (): JSX.Element => {
     [dispatch],
   );
 
+  const onSelect = useCallback(() => {
+    api.settings.POST({ directory: state.path });
+  }, [state.path]);
+
   return (
     <div>
-      <input type="text" value={state.path} onChange={onChangeText} />
+      <div className={styles.pathWrapper}>
+        <input type="text" value={state.path} onChange={onChangeText} />
+        <button className={styles.selectButton} onClick={onSelect}>
+          Select
+        </button>
+      </div>
       <SelectedPath.Provider value={state.path}>
         <FileSystem
           {...state.fileSystem}
           onToggle={onToggle}
-          onSelect={onSelect}
+          onClick={onClick}
           onGetChildren={getChildrenAndParents}
         />
       </SelectedPath.Provider>

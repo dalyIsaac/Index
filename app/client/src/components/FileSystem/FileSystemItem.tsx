@@ -9,7 +9,7 @@ export interface FileSystemProps {
   items: IFileSystem["items"];
   node: IDirectoryItem;
   onToggle: (id: string) => void;
-  onSelect: (path: string) => void;
+  onClick: (path: string) => void;
   onGetChildren: (path: string) => void;
 }
 
@@ -18,7 +18,7 @@ const FileSystemItem = ({
   node,
   onToggle,
   onGetChildren,
-  onSelect,
+  onClick,
 }: FileSystemProps): JSX.Element => {
   const selectedPath = useContext(SelectedPath);
   const separator = useContext(Separator);
@@ -37,7 +37,7 @@ const FileSystemItem = ({
               items={items}
               onToggle={onToggle}
               onGetChildren={onGetChildren}
-              onSelect={onSelect}
+              onClick={onClick}
             />
           </div>,
         );
@@ -45,14 +45,7 @@ const FileSystemItem = ({
     }
 
     return renderedChildren;
-  }, [
-    items,
-    node.children,
-    node.isExpanded,
-    onGetChildren,
-    onSelect,
-    onToggle,
-  ]);
+  }, [items, node.children, node.isExpanded, onGetChildren, onClick, onToggle]);
 
   const toggle = useCallback(() => {
     onToggle(node.path);
@@ -62,8 +55,8 @@ const FileSystemItem = ({
   }, [node.children, node.path, node.isExpanded, onGetChildren, onToggle]);
 
   const select = useCallback(() => {
-    onSelect(node.path);
-  }, [node.path, onSelect]);
+    onClick(node.path);
+  }, [node.path, onClick]);
 
   const isSelected = useMemo(() => {
     const pathNoSep =
@@ -74,7 +67,7 @@ const FileSystemItem = ({
   }, [node.path, selectedPath, separator]);
 
   return (
-    <div>
+    <div className={styles.itemWrapper}>
       <div
         className={`${styles.wrapper} ${!isSelected || styles.wrapperSelected}`}
         onClick={select}

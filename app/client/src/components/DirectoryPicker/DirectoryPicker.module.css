@@ -1,0 +1,9 @@
+.pathWrapper {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  padding: 4px;
+}
+
+.selectButton {
+  margin-left: 4px;
+}
