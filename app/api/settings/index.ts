@@ -1,15 +1,19 @@
 export * from "./schema";
 
-import { API_SETTINGS } from "./_root";
-import { get } from "../fetch";
+import { SettingsResult, SettingsSchema } from "./schema";
+import { get, post } from "../fetch";
 
-export interface Settings {
-  directory?: string;
-}
+import { API_SETTINGS } from "./_root";
 
 const settings = {
   API: API_SETTINGS,
-  GET: () => get<Settings>(API_SETTINGS),
+  GET: () => get<SettingsResult>(API_SETTINGS),
+  POST: (json: Partial<SettingsSchema>) =>
+    post<Partial<SettingsSchema>, Partial<SettingsResult>>(
+      API_SETTINGS,
+      undefined,
+      json,
+    ),
 };
 
 export default settings;

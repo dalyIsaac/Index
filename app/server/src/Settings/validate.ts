@@ -14,9 +14,11 @@ export const validateItem = async <T>(
   key: string,
   value: T,
   { type, required, validate }: SchemaItem<T>,
+  allowPartial = false,
 ): Promise<string | undefined> => {
   key = capitalizeFirstLetter(key);
-  const validRequired = (required === true && !!value) || required === false;
+  const validRequired =
+    (required === true && !!value) || required === false || allowPartial;
   if (!validRequired) {
     return `"${key}" is required. Please add it to settings.`;
   }
@@ -31,7 +33,6 @@ export const validateItem = async <T>(
 
   if (validate) {
     const validateResult = await validate(value);
-    console.log(validateResult);
     if (typeof validateResult === "string" || validateResult === false) {
       return `"${key}" is not valid. ${validateResult}`;
     }
@@ -40,19 +41,21 @@ export const validateItem = async <T>(
   return;
 };
 
-export const validateData = async (data: Settings): Promise<SettingsResult> => {
+export const validateData = async (
+  data: Partial<Settings>,
+  allowPartial = false,
+): Promise<SettingsResult> => {
   // eslint-disable-next-line
   // @ts-ignore
   const results: SettingsResult = {};
 
   let key: SettingsKey;
   for (key in SettingsSchema) {
-    // eslint-disable-next-line no-prototype-builtins
-    if (SettingsSchema.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(SettingsSchema, key)) {
       const schemaItem = SettingsSchema[key];
       const value = data[key] || SettingsSchema[key].default;
 
-      const error = await validateItem(key, value, schemaItem);
+      const error = await validateItem(key, value, schemaItem, allowPartial);
 
       results[key] = {
         value,
@@ -60,6 +63,5 @@ export const validateData = async (data: Settings): Promise<SettingsResult> => {
       };
     }
   }
-  console.log(results);
   return results;
 };
