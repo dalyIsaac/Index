@@ -1,3 +1,3 @@
-import { API_ROOT } from "../index";
+import { API_ROOT } from "../_root";
 
 export const API_DIRS = API_ROOT + "/dirs";

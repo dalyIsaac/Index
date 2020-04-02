@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import directoryPickerRoutes from "./DirectoryPicker/routes";
 import dotenv from "dotenv";
 import path from "path";
+import settingsRoutes from "./Settings/routes";
 
 dotenv.config();
 const PORT = process.env.PORT || 3001;
@@ -39,6 +40,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
 directoryPickerRoutes(app);
+settingsRoutes(app);
 
 // Run
 serveUI(app);

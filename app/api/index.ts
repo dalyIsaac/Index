@@ -1,10 +1,12 @@
 import { default as dirsImport } from "./dirs";
-export const dirs = dirsImport;
+import { default as settingsImport } from "./settings";
 
-export const API_ROOT = "/api";
+export const settings = settingsImport;
+export const dirs = dirsImport;
 
 const api = {
   dirs,
+  settings,
 };
 
 export default api;
