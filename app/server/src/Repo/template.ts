@@ -2,11 +2,25 @@ import { addSeparator } from "@index/helpers";
 import path from "path";
 import { promises } from "fs";
 
-export const populateFromTemplate = async (repoPath: string): Promise<void> => {
-  // TODO: Check if year exists
-  // TODO: Check if month exists
-  // TODO: Check if day exists
-  // TODO: Populate day with template
+export interface LogTemplate {
+  computer: {
+    name: string;
+    os: string;
+  };
+  datetime: {
+    start: string;
+    end: string;
+  };
+  executable: {
+    name: string;
+    path: string;
+  };
+  document?: {
+    name: string;
+    path: string;
+  };
+}
+
 };
 
 export const addReadme = async (repoPath: string): Promise<void> => {
