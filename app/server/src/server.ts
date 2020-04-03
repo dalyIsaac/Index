@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import directoryPickerRoutes from "./DirectoryPicker/routes";
 import dotenv from "dotenv";
 import path from "path";
+import repoRoutes from "./Repo/routes";
 import settingsRoutes from "./Settings/routes";
 
 dotenv.config();
@@ -41,6 +42,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Routes
 directoryPickerRoutes(app);
 settingsRoutes(app);
+repoRoutes(app);
 
 // Run
 serveUI(app);
