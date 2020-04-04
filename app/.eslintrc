@@ -17,8 +17,13 @@
         "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
       }
     ],
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "prettier/prettier": "warn"
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "@typescript-eslint/explicit-function-return-type": "off"
   },
   "plugins": ["@typescript-eslint", "prettier"],
   "overrides": [
