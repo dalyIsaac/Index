@@ -1,5 +1,6 @@
 import express, { Application } from "express";
 
+import Terminal from "./Terminal";
 import bodyParser from "body-parser";
 import directoryPickerRoutes from "./DirectoryPicker/routes";
 import dotenv from "dotenv";
@@ -24,6 +25,7 @@ const DEV_MSG =
   "Express Server is running in development mode. " +
   "No front-end content is being served.";
 
+const terminal = new Terminal();
 const serveUI = (app: Application) => {
   if (process.env.NODE_ENV !== "production") {
     app.get("*", (req, res) => res.send(DEV_MSG));
