@@ -1,4 +1,4 @@
-import { open } from "./clone";
+import { open } from "./open";
 
 const repo = {
   open,
