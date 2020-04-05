@@ -1,18 +1,17 @@
-import { Repository } from "nodegit";
 import { addReadme } from "./template";
 import { getDirectory } from "../Settings/settings";
-import path from "path";
+import terminal from "../Terminal";
 
 export const openRepo = async () => {
-  const pathStr = await getDirectory();
-  const repoPath = path.resolve(pathStr);
-  try {
-    // Try open the repo
-    const repo = await Repository.open(repoPath);
-    console.log("HERE");
-  } catch (error) {
-    // Initialze the repo
-    await addReadme(repoPath);
-    const repo = await Repository.init(repoPath, 0);
-  }
+  const path = await getDirectory();
+  await terminal({
+    // Check if the directory is a repo
+    changeDir: path,
+    command: "git status",
+    onError: {
+      // Initialize the repo
+      command: "git init",
+      // TODO: onSuccess: Add README
+    },
+  });
 };

@@ -9,6 +9,5 @@ export const openRepo = async (
   res: Response,
 ): Promise<Response> => {
   await Model.openRepo();
-  console.log("Done");
   return res.status(OK).json({});
 };
