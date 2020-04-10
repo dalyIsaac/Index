@@ -32,7 +32,7 @@ const FileSystemItem = ({
       for (const key of node.children) {
         const dir = items[key];
         renderedChildren.push(
-          <div key={dir.path} style={{ paddingLeft: 40 }}>
+          <div key={dir.path} style={{ paddingLeft: 28 }}>
             <FileSystemItem
               key={dir.path}
               node={dir}
@@ -90,7 +90,7 @@ const FileSystemItem = ({
   });
   const label = css({
     color: theme.colors.colorPrimary,
-    paddingLeft: "8px",
+    paddingLeft: "16px",
     ":hover": {
       cursor: "pointer",
     },
