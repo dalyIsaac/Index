@@ -3,7 +3,6 @@ import { Button, KIND } from "baseui/button";
 import LightBulb from "./LightBulb";
 import React from "react";
 import { StatefulTooltip } from "baseui/tooltip";
-import { useCallback } from "react";
 import { useStyletron } from "baseui";
 
 interface HeaderProps {
@@ -30,7 +29,6 @@ const Header = ({ height, toggleTheme }: HeaderProps): JSX.Element => {
     textDecoration: "none",
     ":hover": {
       color: theme.colors.contentSecondary,
-      //   borderRadius: theme.borders.radius300,
       backgroundColor: theme.colors.backgroundTertiary,
     },
   });
