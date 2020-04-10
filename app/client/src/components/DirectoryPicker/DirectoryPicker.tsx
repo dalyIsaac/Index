@@ -1,13 +1,20 @@
+import {
+  Button,
+  KIND as ButtonKind,
+  SHAPE as ButtonShape,
+  SIZE as ButtonSize,
+} from "baseui/button";
 import React, { useCallback, useEffect, useRef } from "react";
 import { SelectedPath, addRoot, setOS, setPath, toggle } from "./reducers";
 import { useDispatch, useSelector } from "react-redux";
 
 import FileSystem from "../FileSystem";
+import { Input } from "baseui/input";
 import { State } from "../../store";
 import api from "@index/api";
-import styles from "./DirectoryPicker.module.css";
 import useGetChildrenAndParents from "./useGetChildrenAndParents";
 import useOnUpdatedPath from "./useOnUpdatedPath";
+import { useStyletron } from "baseui";
 
 const DirectoryPicker = (): JSX.Element => {
   const state = useSelector((state: State) => state.directoryPicker);
@@ -69,19 +76,39 @@ const DirectoryPicker = (): JSX.Element => {
     [dispatch],
   );
 
-  const onSelect = useCallback(() => {
+  const onSave = useCallback(() => {
     api.settings.POST({ directory: state.path });
   }, [state.path]);
 
+  const [css] = useStyletron();
+  const wrapper = css({ maxHeight: "100vh" });
+  const padding = 4;
+  const pathWrapper = css({
+    display: "grid",
+    gridTemplateColumns: "1fr 4px auto",
+    padding: `${padding}px`,
+    // height: "20px",
+  });
+  const fileSystem = css({
+    height: `calc(100vh - ${48 + 2 * padding}px)`,
+    overflowY: "auto",
+  });
+
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.pathWrapper}>
-        <input type="text" value={state.path} onChange={onChangeText} />
-        <button className={styles.selectButton} onClick={onSelect}>
-          Select
-        </button>
+    <div className={wrapper}>
+      <div className={pathWrapper}>
+        <Input value={state.path} onChange={onChangeText} />
+        <div />
+        <Button
+          onClick={onSave}
+          kind={ButtonKind.primary}
+          size={ButtonSize.default}
+          shape={ButtonShape.pill}
+        >
+          Save
+        </Button>
       </div>
-      <div className={styles.fileSystem}>
+      <div className={fileSystem}>
         <SelectedPath.Provider value={state.path}>
           <FileSystem
             {...state.fileSystem}

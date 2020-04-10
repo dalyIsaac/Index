@@ -1,9 +1,11 @@
+import { Button, KIND, SHAPE, SIZE } from "baseui/button";
+import { ChevronDown, ChevronRight } from "baseui/icon";
 import { IDirectoryItem, IFileSystem } from "../DirectoryPicker/state";
 import React, { useCallback, useContext, useMemo } from "react";
 
 import { SelectedPath } from "../DirectoryPicker/reducers";
 import { Separator } from "./state";
-import styles from "./FileSystemItem.module.css";
+import { useStyletron } from "baseui";
 
 export interface FileSystemProps {
   items: IFileSystem["items"];
@@ -66,16 +68,49 @@ const FileSystemItem = ({
     return selectedPath === pathNoSep || selectedPath === node.path;
   }, [node.path, selectedPath, separator]);
 
+  const [css, theme] = useStyletron();
+  const itemWrapper = css({ paddingTop: "1px", paddingBottom: "1px" });
+  const wrapper = css({
+    padding: "4px",
+    borderRadius: theme.borders.radius400,
+    display: "flex",
+    alignItems: "center",
+    textAlign: "center",
+    ":hover": {
+      backgroundColor: theme.colors.contentInverseSecondary,
+      cursor: "pointer",
+    },
+    ":active": {
+      backgroundColor: theme.colors.contentInverseTertiary,
+      cursor: "pointer",
+    },
+  });
+  const wrapperSelected = css({
+    backgroundColor: theme.colors.contentInverseSecondary,
+  });
+  const label = css({
+    color: theme.colors.colorPrimary,
+    paddingLeft: "8px",
+    ":hover": {
+      cursor: "pointer",
+    },
+  });
+
   return (
-    <div className={styles.itemWrapper}>
+    <div className={itemWrapper}>
       <div
-        className={`${styles.wrapper} ${!isSelected || styles.wrapperSelected}`}
+        className={`${wrapper} ${!isSelected || wrapperSelected}`}
         onClick={select}
       >
-        <button onClick={toggle} className={styles.toggleButton}>
-          {node.isExpanded ? "-" : "+"}
-        </button>
-        <label className={styles.label}>{node.label}</label>
+        <Button
+          onClick={toggle}
+          size={SIZE.mini}
+          shape={SHAPE.round}
+          kind={KIND.primary}
+        >
+          {node.isExpanded ? <ChevronDown /> : <ChevronRight />}
+        </Button>
+        <label className={label}>{node.label}</label>
       </div>
       {children}
     </div>

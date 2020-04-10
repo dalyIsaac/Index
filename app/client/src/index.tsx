@@ -2,18 +2,28 @@ import "./index.css";
 
 import * as serviceWorker from "./serviceWorker";
 
+import { BaseProvider, DarkTheme, LightTheme } from "baseui";
+
 import App from "./App";
 import { Provider } from "react-redux";
 import React from "react";
 import ReactDOM from "react-dom";
+import { Client as Styletron } from "styletron-engine-atomic";
+import { Provider as StyletronProvider } from "styletron-react";
 import { initializeState } from "./store";
+
+const engine = new Styletron();
 
 const store = initializeState();
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <StyletronProvider value={engine}>
+        <BaseProvider theme={DarkTheme}>
+          <App />
+        </BaseProvider>
+      </StyletronProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root"),
