@@ -1,41 +1,66 @@
-import { H1, Paragraph1 } from "baseui/typography";
+import { H1, Label2, Paragraph1 } from "baseui/typography";
+import React, { useState } from "react";
 
-import React from "react";
+import { Button } from "baseui/button";
 import { useStyletron } from "baseui";
 
-export interface SettingsPageProps {
-  title: string;
-  description: string;
-  children: JSX.Element | JSX.Element[];
+export interface SettingsPageChildProps {
+  setCanProceed?: (canProceed: boolean) => void;
+  setMessage?: (message: string) => void;
 }
 
-const SettingsPage = ({
+export interface SettingsPageProps<Props extends SettingsPageChildProps> {
+  title: string;
+  description: string;
+  component: React.ComponentType<Props>;
+  props: Props;
+}
+
+function SettingsPage<Props>({
   title,
   description,
-  children,
-}: SettingsPageProps): JSX.Element => {
+  component: Component,
+  props,
+}: SettingsPageProps<Props>): JSX.Element {
   const [css, theme] = useStyletron();
+  const [canProceed, setCanProceed] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const wrapper = css({
+  const wrapperStyle = css({
     display: "grid",
-    gridTemplateColumns: "75% 25%",
+    gridTemplateColumns: "auto 400px",
   });
-  const descriptionWrapper = css({
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
+  const descriptionWrapperStyle = css({
     paddingLeft: "20px",
+  });
+  const descriptionContentStyle = css({
+    gridRow: 2,
+    paddingTop: "80%",
+  });
+  const spacerStyle = css({
+    padding: "4px",
   });
 
   return (
-    <div className={wrapper}>
-      <div>{children}</div>
-      <div className={descriptionWrapper}>
-        <H1>{title}</H1>
-        <Paragraph1>{description}</Paragraph1>
+    <div className={wrapperStyle}>
+      <Component
+        {...props}
+        setCanProceed={setCanProceed}
+        setMessage={setMessage}
+      />
+      <div className={descriptionWrapperStyle}>
+        <div className={descriptionContentStyle}>
+          <H1>{title}</H1>
+          <div className={spacerStyle}></div>
+          <Paragraph1>{description}</Paragraph1>
+          <div className={spacerStyle}></div>
+          <Button disabled={!canProceed}>Proceed</Button>
+          <div className={spacerStyle}></div>
+          <Label2 color={theme.colors.contentNegative}>{message}</Label2>
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default SettingsPage;
