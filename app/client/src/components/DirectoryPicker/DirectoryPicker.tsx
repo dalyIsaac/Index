@@ -16,7 +16,11 @@ import useGetChildrenAndParents from "./useGetChildrenAndParents";
 import useOnUpdatedPath from "./useOnUpdatedPath";
 import { useStyletron } from "baseui";
 
-const DirectoryPicker = (): JSX.Element => {
+export interface DirectoryPickerProps {
+  height: string;
+}
+
+const DirectoryPicker = ({ height }: DirectoryPickerProps): JSX.Element => {
   const state = useSelector((state: State) => state.directoryPicker);
   const dispatch = useDispatch();
 
@@ -82,15 +86,13 @@ const DirectoryPicker = (): JSX.Element => {
 
   const [css] = useStyletron();
   const wrapper = css({ maxHeight: "100vh" });
-  const padding = 4;
   const pathWrapper = css({
     display: "grid",
     gridTemplateColumns: "1fr 4px auto",
-    padding: `${padding}px`,
-    // height: "20px",
+    paddingRight: "4px",
   });
   const fileSystem = css({
-    height: `calc(100vh - ${48 + 2 * padding}px)`,
+    height: `calc(${height} - 48px)`,
     overflowY: "auto",
   });
 

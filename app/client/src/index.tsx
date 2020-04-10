@@ -2,8 +2,6 @@ import "./index.css";
 
 import * as serviceWorker from "./serviceWorker";
 
-import { BaseProvider, DarkTheme, LightTheme } from "baseui";
-
 import App from "./App";
 import { Provider } from "react-redux";
 import React from "react";
@@ -20,9 +18,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <StyletronProvider value={engine}>
-        <BaseProvider theme={DarkTheme}>
-          <App />
-        </BaseProvider>
+        <App />
       </StyletronProvider>
     </Provider>
   </React.StrictMode>,
