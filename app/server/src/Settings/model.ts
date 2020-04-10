@@ -14,6 +14,7 @@ export const getSettings = async (): Promise<SettingsResult> => {
 export const postSettings = async (
   data: Partial<Settings>,
 ): Promise<Partial<SettingsResult>> => {
+  console.log(data);
   const result = await validateData(data, true);
   const errors: Partial<SettingsResult> = {};
   const settings = await readSettings();
