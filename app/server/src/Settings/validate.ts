@@ -12,15 +12,18 @@ const capitalizeFirstLetter = (s: string): string => {
 
 export const validateItem = async <T>(
   key: string,
-  value: T,
+  value: T | undefined,
   { type, required, validate }: SchemaItem<T>,
   allowPartial = false,
 ): Promise<string | undefined> => {
   key = capitalizeFirstLetter(key);
-  const validRequired =
-    (required === true && !!value) || required === false || allowPartial;
-  if (!validRequired) {
+
+  if (required === true && value === undefined && allowPartial === false) {
     return `"${key}" is required. Please add it to settings.`;
+  }
+
+  if (value === undefined) {
+    return;
   }
 
   const validType = typeof value === type;
@@ -55,6 +58,12 @@ export const validateData = async (
       const schemaItem = SettingsSchema[key];
       const value = data[key] || SettingsSchema[key].default;
 
+      if (
+        value === undefined &&
+        (schemaItem.required === false || allowPartial)
+      ) {
+        continue;
+      }
       const error = await validateItem(key, value, schemaItem, allowPartial);
 
       results[key] = {

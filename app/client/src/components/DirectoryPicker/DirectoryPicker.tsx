@@ -1,22 +1,60 @@
+import {
+  Button,
+  KIND as ButtonKind,
+  SHAPE as ButtonShape,
+  SIZE as ButtonSize,
+} from "baseui/button";
 import React, { useCallback, useEffect, useRef } from "react";
 import { SelectedPath, addRoot, setOS, setPath, toggle } from "./reducers";
 import { useDispatch, useSelector } from "react-redux";
 
 import FileSystem from "../FileSystem";
+import { Input } from "baseui/input";
+import { SettingsPageChildProps } from "../SettingsPage/SettingsPage";
 import { State } from "../../store";
+import { addSeparator } from "@index/helpers";
 import api from "@index/api";
-import styles from "./DirectoryPicker.module.css";
 import useGetChildrenAndParents from "./useGetChildrenAndParents";
 import useOnUpdatedPath from "./useOnUpdatedPath";
+import { useState } from "react";
+import { useStyletron } from "baseui";
 
-const DirectoryPicker = (): JSX.Element => {
+export interface DirectoryPickerProps extends SettingsPageChildProps {
+  height: string;
+}
+
+const DirectoryPicker = ({
+  height,
+  setCanProceed,
+  setMessage,
+}: DirectoryPickerProps): JSX.Element => {
   const state = useSelector((state: State) => state.directoryPicker);
   const dispatch = useDispatch();
+  const alreadyRun = useRef(false);
+
+  const [canSave, setCanSave] = useState(false);
+  const updatePath = useCallback(
+    (dir: string, sep = state.fileSystem.separator, hasRun = true) => {
+      dispatch(setPath(dir, sep));
+      if (hasRun && addSeparator(dir, sep) !== addSeparator(state.path, sep)) {
+        console.log(hasRun);
+        setCanProceed?.(false);
+        setMessage?.("Please save your changes");
+        setCanSave(true);
+      }
+    },
+    [
+      dispatch,
+      setCanProceed,
+      setMessage,
+      state.fileSystem.separator,
+      state.path,
+    ],
+  );
 
   const getChildrenAndParents = useGetChildrenAndParents();
   const onUpdatedPath = useOnUpdatedPath();
 
-  const alreadyRun = useRef(false);
   useEffect(() => {
     // Only needs to run at the very start.
     if (!alreadyRun.current) {
@@ -25,7 +63,8 @@ const DirectoryPicker = (): JSX.Element => {
       api.settings.directory.GET().then(async (dir) => {
         api.dirs.home.GET().then(async ({ os, separator: sep }) => {
           dispatch(setOS(os));
-          dispatch(setPath(dir, sep));
+          updatePath(dir, sep, false);
+          setCanProceed?.(true);
 
           const pieces = dir.split(sep);
           dispatch(addRoot(pieces[0] || sep));
@@ -36,7 +75,13 @@ const DirectoryPicker = (): JSX.Element => {
 
       alreadyRun.current = true;
     }
-  }, [dispatch, getChildrenAndParents, state.fileSystem.separator]);
+  }, [
+    dispatch,
+    getChildrenAndParents,
+    setCanProceed,
+    state.fileSystem.separator,
+    updatePath,
+  ]);
 
   useEffect(() => {
     onUpdatedPath();
@@ -46,9 +91,9 @@ const DirectoryPicker = (): JSX.Element => {
 
   const onChangeText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      dispatch(setPath(e.target.value));
+      updatePath(e.target.value);
     },
-    [dispatch],
+    [updatePath],
   );
 
   const onToggle = useCallback(
@@ -64,24 +109,46 @@ const DirectoryPicker = (): JSX.Element => {
       // the final separator to expand. However, a mouse selection doesn't mean
       // expansion.
       const newPath = path.slice(0, path.length - 1);
-      dispatch(setPath(newPath));
+      updatePath(newPath); // TODO: Alter setPath
     },
-    [dispatch],
+    [updatePath],
   );
 
-  const onSelect = useCallback(() => {
+  const onSave = useCallback(() => {
     api.settings.POST({ directory: state.path });
-  }, [state.path]);
+    setCanProceed?.(true);
+    setMessage?.("");
+    setCanSave(false);
+  }, [setCanProceed, setMessage, state.path]);
+
+  const [css] = useStyletron();
+  const wrapper = css({ maxHeight: "100vh" });
+  const pathWrapper = css({
+    display: "grid",
+    gridTemplateColumns: "1fr 4px auto",
+    paddingRight: "4px",
+  });
+  const fileSystem = css({
+    height: `calc(${height} - 48px)`,
+    overflowY: "auto",
+  });
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.pathWrapper}>
-        <input type="text" value={state.path} onChange={onChangeText} />
-        <button className={styles.selectButton} onClick={onSelect}>
-          Select
-        </button>
+    <div className={wrapper}>
+      <div className={pathWrapper}>
+        <Input value={state.path} onChange={onChangeText} />
+        <div />
+        <Button
+          disabled={!canSave}
+          onClick={onSave}
+          kind={ButtonKind.primary}
+          size={ButtonSize.default}
+          shape={ButtonShape.pill}
+        >
+          {canSave ? "Save" : "Saved"}
+        </Button>
       </div>
-      <div className={styles.fileSystem}>
+      <div className={fileSystem}>
         <SelectedPath.Provider value={state.path}>
           <FileSystem
             {...state.fileSystem}

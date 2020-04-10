@@ -37,3 +37,13 @@ export const getDirectory = async (
   const dir = await Model.getDirectory();
   return res.status(OK).json(dir);
 };
+
+type GetThemeSettings = ReturnType<typeof settings["theme"]["GET"]>;
+
+export const getTheme = async (
+  req: Request,
+  res: Response,
+): Promise<Response<GetThemeSettings>> => {
+  const theme = await Model.getTheme();
+  return res.status(OK).json(theme);
+};

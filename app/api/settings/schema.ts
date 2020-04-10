@@ -11,13 +11,14 @@ export interface SchemaItem<T> {
     | "undefined"
     | any;
   example: () => T;
-  validate?: (value: T) => Promise<boolean | string>;
-  default?: any;
+  validate?: (value: T | undefined) => Promise<boolean | string>;
+  default?: T;
   required?: boolean;
 }
 
 export type SettingsSchema = {
-  [id in "directory"]: SchemaItem<string>;
+  directory: SchemaItem<string>;
+  theme: SchemaItem<string>;
 };
 
 export const SettingsSchema: SettingsSchema = {
@@ -35,6 +36,19 @@ export const SettingsSchema: SettingsSchema = {
     },
     example: () => "C:\\Users\\username\\Repos\\indextracker",
   },
+  theme: {
+    id: "theme",
+    type: "string",
+    required: true,
+    validate: async (s) => {
+      if (["light", "dark"].includes(s)) {
+        return true;
+      }
+      return `The theme must be either "light" or "dark".`;
+    },
+    example: () => "light",
+    default: "light",
+  },
 };
 
 export type SettingsKey = keyof typeof SettingsSchema;
@@ -45,6 +59,6 @@ export type Settings = {
 export type SettingsResult = {
   [key in SettingsKey]: {
     error?: string;
-    value: ReturnType<typeof SettingsSchema[key]["example"]>;
+    value?: ReturnType<typeof SettingsSchema[key]["example"]>;
   };
 };

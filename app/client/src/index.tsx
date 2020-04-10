@@ -6,14 +6,20 @@ import App from "./App";
 import { Provider } from "react-redux";
 import React from "react";
 import ReactDOM from "react-dom";
+import { Client as Styletron } from "styletron-engine-atomic";
+import { Provider as StyletronProvider } from "styletron-react";
 import { initializeState } from "./store";
+
+const engine = new Styletron();
 
 const store = initializeState();
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <StyletronProvider value={engine}>
+        <App />
+      </StyletronProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root"),
