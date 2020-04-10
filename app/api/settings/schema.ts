@@ -11,7 +11,7 @@ export interface SchemaItem<T> {
     | "undefined"
     | any;
   example: () => T;
-  validate?: (value: T | undefined) => Promise<boolean | string>;
+  validate?: (value: T) => Promise<boolean | string>;
   default?: T;
   required?: boolean;
 }
