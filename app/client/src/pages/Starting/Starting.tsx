@@ -20,7 +20,7 @@ const Starting = (): JSX.Element => {
     });
   }, [history]);
 
-  const [css, theme] = useStyletron();
+  const [css] = useStyletron();
 
   const welcomeStyle = css({
     height: "100%",
