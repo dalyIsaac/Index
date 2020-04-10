@@ -4,6 +4,8 @@ import Header, { HEADER_HEIGHT } from "./components/Header";
 import React, { useState } from "react";
 
 import RepoDirectory from "./pages/OOBE/RepoDirectory";
+import { SetupRoutes } from "./pages/OOBE";
+import Welcome from "./pages/OOBE/Welcome";
 import { useCallback } from "react";
 
 interface AppProps {
@@ -17,8 +19,11 @@ const Routes = ({ toggleTheme }: AppProps): JSX.Element => {
     <div className={css({ backgroundColor: theme.colors.background })}>
       <Header height={HEADER_HEIGHT} toggleTheme={toggleTheme} />
       <BrowserRouter>
-        <Route path="/setup/repo">
+        <Route path={SetupRoutes.repo}>
           <RepoDirectory />
+        </Route>
+        <Route path={SetupRoutes.welcome}>
+          <Welcome />
         </Route>
       </BrowserRouter>
     </div>
