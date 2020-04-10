@@ -22,7 +22,7 @@ export const postSettings = async (
   for (key in result) {
     if (Object.prototype.hasOwnProperty.call(result, key)) {
       const { value, error } = result[key];
-      if (!error) {
+      if (!error && value) {
         settings[key] = value;
       } else {
         errors[key] = { value, error };
@@ -44,4 +44,11 @@ export const getDirectory = async (): Promise<string> => {
     return homedir();
   }
   return value;
+};
+
+export const getTheme = async (): Promise<string> => {
+  const settings = await getSettings();
+  const { value } = settings["theme"];
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return value!;
 };

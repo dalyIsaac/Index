@@ -1,4 +1,5 @@
-import { Settings } from "@index/api/settings/schema";
+import { Settings, SettingsSchema } from "@index/api/settings/schema";
+
 import { addSeparator } from "@index/helpers";
 import { homedir } from "os";
 import path from "path";
@@ -17,7 +18,11 @@ export const readSettings = async (): Promise<Settings> => {
     console.error(err);
     // Create the non-existent file
     await promises.writeFile(settingsPath, JSON.stringify({ directory: "" }));
-    data = { directory: "" };
+    data = {
+      directory: "",
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      theme: SettingsSchema.theme.default!,
+    };
   }
   return data;
 };
@@ -25,5 +30,6 @@ export const readSettings = async (): Promise<Settings> => {
 export const getDirectory = async (): Promise<string> => {
   const settings = await readSettings();
   const results = await validateData(settings, false);
-  return results.directory.value;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return results.directory.value!; // theme has a default in the schema
 };

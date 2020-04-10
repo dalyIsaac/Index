@@ -5,8 +5,10 @@ import { get, post } from "../fetch";
 
 import { API_SETTINGS } from "./_root";
 import { default as directoryImport } from "./directory";
+import { default as themeImport } from "./theme";
 
 export const directory = directoryImport;
+export const theme = themeImport;
 
 const settings = {
   API: API_SETTINGS,
@@ -18,6 +20,7 @@ const settings = {
       json,
     ),
   directory,
+  theme,
 };
 
 export default settings;
