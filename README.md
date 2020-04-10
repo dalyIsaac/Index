@@ -55,7 +55,11 @@ Build the helper and api packages, and ensure that yarn has them correctly linke
 ~/index/app/node_modules/@index$ rm api helpers && ln -s ../../api api && ln -s ../../helpers helpers
 
 # For Windows:
-# TODO
+~/index/app/helpers$ cd ../node_modules/@index
+~/index/app/node_modules/@index$ Remove-Item -Force api
+~/index/app/node_modules/@index$ cmd /c mklink /D api ..\..api
+~/index/app/node_modules/@index$ Remove-Item -Force helpers
+~/index/app/node_modules/@index$ cmd /c mklink /D helpers ..\..helpers
 ```
 
 Run the server:
