@@ -16,13 +16,13 @@ export const readSettings = async (): Promise<Settings> => {
     data = JSON.parse(rawdata.toString());
   } catch (err) {
     console.error(err);
-    // Create the non-existent file
-    await promises.writeFile(settingsPath, JSON.stringify({ directory: "" }));
     data = {
       directory: "",
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       theme: SettingsSchema.theme.default!,
     };
+    // Create the non-existent file
+    await promises.writeFile(settingsPath, JSON.stringify(data));
   }
   return data;
 };
