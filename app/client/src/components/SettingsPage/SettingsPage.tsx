@@ -1,7 +1,8 @@
 import { H1, Label2, Paragraph1 } from "baseui/typography";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { Button } from "baseui/button";
+import { useHistory } from "react-router-dom";
 import { useStyletron } from "baseui";
 
 export interface SettingsPageChildProps {
@@ -14,6 +15,7 @@ export interface SettingsPageProps<Props extends SettingsPageChildProps> {
   description: string;
   component: React.ComponentType<Props>;
   props: Props;
+  nextUrl: string;
 }
 
 function SettingsPage<Props>({
@@ -21,7 +23,13 @@ function SettingsPage<Props>({
   description,
   component: Component,
   props,
+  nextUrl,
 }: SettingsPageProps<Props>): JSX.Element {
+  const history = useHistory();
+  const onProceed = useCallback(() => {
+    history.push(nextUrl);
+  }, [history, nextUrl]);
+
   const [css, theme] = useStyletron();
   const [canProceed, setCanProceed] = useState(false);
   const [message, setMessage] = useState("");
@@ -54,7 +62,9 @@ function SettingsPage<Props>({
           <div className={spacerStyle}></div>
           <Paragraph1>{description}</Paragraph1>
           <div className={spacerStyle}></div>
-          <Button disabled={!canProceed}>Proceed</Button>
+          <Button onClick={onProceed} disabled={!canProceed}>
+            Proceed
+          </Button>
           <div className={spacerStyle}></div>
           <Label2 color={theme.colors.contentNegative}>{message}</Label2>
         </div>

@@ -10,6 +10,7 @@ const RepoDirectory = (): JSX.Element => {
       description="Select a directory in which the logs for index will reside."
       component={DirectoryPicker}
       props={{ height: `calc(100vh - ${HEADER_HEIGHT})` }}
+      nextUrl="/"
     />
   );
 };
