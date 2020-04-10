@@ -1,30 +1,31 @@
 import { BaseProvider, DarkTheme, LightTheme, useStyletron } from "baseui";
+import { BrowserRouter, Route } from "react-router-dom";
+import Header, { HEADER_HEIGHT } from "./components/Header";
 import React, { useState } from "react";
 
-import DirectoryPicker from "./components/DirectoryPicker";
-import Header from "./components/Header";
+import RepoDirectory from "./pages/OOBE/RepoDirectory";
 import { useCallback } from "react";
 
 interface AppProps {
   toggleTheme: () => void;
 }
 
-const heights = {
-  header: "52px",
-};
-
-const App = ({ toggleTheme }: AppProps): JSX.Element => {
+const Routes = ({ toggleTheme }: AppProps): JSX.Element => {
   const [css, theme] = useStyletron();
 
   return (
     <div className={css({ backgroundColor: theme.colors.background })}>
-      <Header height={heights.header} toggleTheme={toggleTheme} />
-      <DirectoryPicker height={`calc(100vh - ${heights.header})`} />
+      <Header height={HEADER_HEIGHT} toggleTheme={toggleTheme} />
+      <BrowserRouter>
+        <Route path="/setup/repo">
+          <RepoDirectory />
+        </Route>
+      </BrowserRouter>
     </div>
   );
 };
 
-const AppWrapper = (): JSX.Element => {
+const App = (): JSX.Element => {
   const [isDark, setIsDark] = useState(false);
   const toggleTheme = useCallback(() => {
     setIsDark(!isDark);
@@ -32,9 +33,9 @@ const AppWrapper = (): JSX.Element => {
 
   return (
     <BaseProvider theme={isDark ? DarkTheme : LightTheme}>
-      <App toggleTheme={toggleTheme} />
+      <Routes toggleTheme={toggleTheme} />
     </BaseProvider>
   );
 };
 
-export default AppWrapper;
+export default App;
