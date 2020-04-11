@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace monitor
@@ -14,13 +11,9 @@ namespace monitor
         [STAThread]
         static void Main()
         {
-            var monitor = new Monitor(OnGetForeground);
+            var reporter = new Reporter("ws://localhost:3001/socket/monitor");
+            var monitor = new Monitor(reporter.SendForegroundItem);
             Application.Run();
-        }
-
-        private static void OnGetForeground(ForegroundItem foreground)
-        {
-            Console.WriteLine(foreground.ExecutableName);
         }
     }
 }

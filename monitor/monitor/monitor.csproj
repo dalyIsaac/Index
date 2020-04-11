@@ -6,4 +6,8 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Websocket.Client" Version="4.2.3" />
+  </ItemGroup>
+
 </Project>

@@ -1,39 +1,43 @@
 using System;
-using WebSocketSharp;
-
+using System.Text.Json;
+using Websocket.Client;
+using Application = System.Windows.Forms.Application;
 
 namespace monitor
 {
     public class Reporter
     {
-        private WebSocket client;
+        private readonly WebsocketClient client;
 
         public Reporter(string uri)
         {
-            client = new WebSocket(uri);
-            client.OnOpen += OnOpen;
-            client.OnMessage += OnMessage;
-            client.OnClose += OnClose;
-            client.Connect();
-            client.Send("Hello, this is DOTNET");
+            client = new WebsocketClient(new Uri(uri));
+            client.MessageReceived.Subscribe(OnMessage);
+            client.DisconnectionHappened.Subscribe(OnClose);
+
+            client.Start().Wait();
+            Console.WriteLine("Reporter WebSocket has started.");
         }
 
-        private void OnOpen(object sender, EventArgs e)
+        private void OnMessage(ResponseMessage msg)
         {
-            Console.WriteLine("WebSocket open!");
+            Console.WriteLine($"Received: {msg}");
         }
 
-        private void OnMessage(object sender, MessageEventArgs e)
+        public void SendForegroundItem(ForegroundItem item)
         {
-            Console.WriteLine($"Received: {e.Data}");
+            string json = JsonSerializer.Serialize(item);
+            client.Send(json);
         }
 
-        private void OnClose(object sender, CloseEventArgs e)
+        public void OnClose(DisconnectionInfo info)
         {
             if (client != null)
             {
-                ((IDisposable)client).Dispose();
+                client.Dispose();
             }
+            Console.WriteLine("Socket closed");
+            Application.Exit();
         }
     }
 }
