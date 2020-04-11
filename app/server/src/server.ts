@@ -1,6 +1,8 @@
 import express, { Application } from "express";
 
+import Monitor from "./Monitor";
 import bodyParser from "body-parser";
+import { createServer } from "http";
 import directoryPickerRoutes from "./DirectoryPicker/routes";
 import dotenv from "dotenv";
 import path from "path";
@@ -8,7 +10,7 @@ import repoRoutes from "./Repo/routes";
 import settingsRoutes from "./Settings/routes";
 
 dotenv.config();
-const PORT = process.env.PORT || 3001;
+const PORT = parseInt(process.env.PORT || "3001");
 
 const serveFrontEndProd = (app: Application) => {
   const dir = path.join(__dirname, "public/index/");
@@ -33,6 +35,12 @@ const serveUI = (app: Application) => {
   }
 };
 
+// Server
+const server = createServer();
+
+// Monitor
+const monitor = new Monitor(server);
+
 const app = express();
 
 // Middleware
@@ -46,6 +54,10 @@ repoRoutes(app);
 
 // Run
 serveUI(app);
-app.listen(PORT, () => {
-  console.log(`Listening on port: ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server and websockets are listening on port ${PORT}`);
+});
+
+process.on("SIGINT", () => {
+  server.close();
 });
