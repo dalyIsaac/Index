@@ -6,7 +6,7 @@ namespace monitor
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var reporter = new Reporter("ws://localhost:3001/socket/monitor");
         }
     }
 }
