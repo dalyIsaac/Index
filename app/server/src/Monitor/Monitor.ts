@@ -34,4 +34,8 @@ export default class Monitor {
   private onClose = () => {
     console.log("Server closed");
   };
+
+  public close = () => {
+    this.socket?.close();
+  };
 }

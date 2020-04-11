@@ -59,5 +59,7 @@ server.listen(PORT, () => {
 });
 
 process.on("SIGINT", () => {
+  console.log("Shutting down...");
+  monitor.close();
   server.close();
 });
