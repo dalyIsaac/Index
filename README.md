@@ -24,7 +24,7 @@ Index is comprised of three components:
 - [Git](https://git-scm.com/)
 - [Yarn (classic)](https://classic.yarnpkg.com/en/)
 - [NodeJS >= 12.16.2 LTS](https://nodejs.org/en/)
-- TODO: dotnet
+- [Visual Studio 2019](https://visualstudio.microsoft.com/vs/) with the `.NET desktop development` workload.
 
 ## Building and Running
 
@@ -57,9 +57,9 @@ Build the helper and api packages, and ensure that yarn has them correctly linke
 # For Windows:
 ~/index/app/helpers$ cd ../node_modules/@index
 ~/index/app/node_modules/@index$ Remove-Item -Force api
-cmd /c mklink /D api ..\..\api
-Remove-Item -Force helpers
-cmd /c mklink /D helpers ..\..\helpers
+                                 cmd /c mklink /D api ..\..\api
+                                 Remove-Item -Force helpers
+                                 cmd /c mklink /D helpers ..\..\helpers
 ```
 
 Run the server:
