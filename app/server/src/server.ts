@@ -1,65 +1,89 @@
 import express, { Application } from "express";
+import http, { createServer } from "http";
 
 import Monitor from "./Monitor";
 import bodyParser from "body-parser";
-import { createServer } from "http";
 import directoryPickerRoutes from "./DirectoryPicker/routes";
 import dotenv from "dotenv";
+import { getDirectory } from "./Settings/model";
 import path from "path";
 import repoRoutes from "./Repo/routes";
 import settingsRoutes from "./Settings/routes";
 
-dotenv.config();
-const PORT = parseInt(process.env.PORT || "3001");
+export default class Server {
+  private static DEV_MSG =
+    "Express Server is running in development mode. " +
+    "No front-end content is being served.";
 
-const serveFrontEndProd = (app: Application) => {
-  const dir = path.join(__dirname, "public/index/");
-  // Set the static and views directory
-  app.set("views", dir);
-  app.use(express.static(dir));
-  // Serve front-end content
-  app.get("*", (req, res) => {
-    res.sendFile("index.html", { root: dir });
-  });
-};
+  private httpServer: http.Server | null = null;
+  public app: Application;
+  public port: number;
+  public monitor: Monitor | null = null;
 
-const DEV_MSG =
-  "Express Server is running in development mode. " +
-  "No front-end content is being served.";
+  constructor(port: number) {
+    dotenv.config();
+    this.port = port;
 
-const serveUI = (app: Application) => {
-  if (process.env.NODE_ENV !== "production") {
-    app.get("*", (req, res) => res.send(DEV_MSG));
-  } else {
-    serveFrontEndProd(app);
+    this.app = express();
+
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
+
+    directoryPickerRoutes(this.app);
+    settingsRoutes(this.app);
+    repoRoutes(this.app);
   }
-};
 
-// Server
-const server = createServer();
+  private serveFrontEndProd = () => {
+    const dir = path.join(__dirname, "public/index/");
+    // Set the static and views directory
+    this.app.set("views", dir);
+    this.app.use(express.static(dir));
+    // Serve front-end content
+    this.app.get("*", (req, res) => {
+      res.sendFile("index.html", { root: dir });
+    });
+  };
 
-// Monitor
-const monitor = new Monitor(server);
+  private serveUI = () => {
+    if (process.env.NODE_ENV !== "production") {
+      this.app.get("*", (req, res) => res.send(Server.DEV_MSG));
+    } else {
+      this.serveFrontEndProd();
+    }
+  };
 
-const app = express();
+  public start = (): void => {
+    this.httpServer = createServer();
+    this.serveUI();
+    this.httpServer.listen(this.port, () => {
+      console.log(`Server is listening on port ${this.port}`);
+    });
+  };
 
-// Middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+  public onShutdown = () => {
+    console.log("Shutting down...");
+    this.stopMonitoring();
+    if (this.httpServer) {
+      this.httpServer.close();
+    }
+  };
 
-// Routes
-directoryPickerRoutes(app);
-settingsRoutes(app);
-repoRoutes(app);
+  public startMonitoring = async () => {
+    if (this.httpServer === null) {
+      this.start();
+    }
 
-// Run
-serveUI(app);
-server.listen(PORT, () => {
-  console.log(`Server and websockets are listening on port ${PORT}`);
-});
+    const repoPath = await getDirectory();
+    // this.httpServer is initialized in `start`.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.monitor = new Monitor(this.httpServer!, repoPath);
+    console.log(`Server's monitor WebSocket is listening on port ${this.port}`);
+  };
 
-process.on("SIGINT", () => {
-  console.log("Shutting down...");
-  monitor.close();
-  server.close();
-});
+  public stopMonitoring = () => {
+    if (this.monitor) {
+      this.monitor.close();
+    }
+  };
+}

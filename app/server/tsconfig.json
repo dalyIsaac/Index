@@ -23,6 +23,7 @@
       "node_modules/@types",
       "./typings"
     ],
+    "paths": { "steno": ["../helpers/typings/steno"] },
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,

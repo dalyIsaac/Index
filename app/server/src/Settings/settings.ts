@@ -1,6 +1,6 @@
 import { Settings, SettingsSchema } from "@index/api/settings/schema";
+import { addSeparator, writeNewFile } from "@index/helpers";
 
-import { addSeparator } from "@index/helpers";
 import { homedir } from "os";
 import path from "path";
 import { promises } from "fs";
@@ -22,7 +22,7 @@ export const readSettings = async (): Promise<Settings> => {
       theme: SettingsSchema.theme.default!,
     };
     // Create the non-existent file
-    await promises.writeFile(settingsPath, JSON.stringify(data));
+    await writeNewFile(settingsPath, JSON.stringify(data));
   }
   return data;
 };

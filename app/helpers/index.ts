@@ -1,3 +1,7 @@
+import fs from "fs";
+import pify from "pify";
+import steno from "steno";
+
 /**
  * Removes the last item if `item === ""`.
  * @param pieces
@@ -35,4 +39,35 @@ export const addSeparator = (path: string, separator: string): string => {
     newPath += separator;
   }
   return newPath;
+};
+
+export const checkExists = async (path: string): Promise<boolean> => {
+  try {
+    await fs.promises.access(path);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+// steno has atomic writing and race condition prevention
+const _writeFile = pify(steno.writeFile);
+
+/**
+ * Writes to a file which already exists. This has atomic writing and race
+ * condition prevention.
+ * @param path The path of the file to write to.
+ * @param data The data to write to the file.
+ */
+export const writeToFile = (path: string, data: string) => {
+  return _writeFile(path, data);
+};
+
+/**
+ * Creates a new file, and populates it with the given data.
+ * @param path The path of the file to write to.
+ * @param data The data to write to the file.
+ */
+export const writeNewFile = (path: string, data: string) => {
+  return fs.promises.writeFile(path, data);
 };
