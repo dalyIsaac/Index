@@ -2,20 +2,19 @@ import { addSeparator } from "@index/helpers";
 import path from "path";
 import { promises } from "fs";
 
-export const getFolders = (repoPath: string) => {
+export const getFolders = (repoPath: string, date: Date) => {
   repoPath = addSeparator(repoPath, path.sep);
 
-  const now = new Date();
-  const year = now.getUTCFullYear();
+  const year = date.getUTCFullYear();
   const yearFolder = repoPath + year;
 
-  const month = now.getUTCMonth();
+  const month = date.getUTCMonth() + 1;
   const monthFolder = addSeparator(yearFolder, path.sep) + month;
 
-  const day = now.getUTCDate();
+  const day = date.getUTCDate();
   const dayFile = addSeparator(monthFolder, path.sep) + day;
 
-  return { now, yearFolder, monthFolder, dayFile };
+  return { yearFolder, monthFolder, dayFile };
 };
 
 export const addReadme = async (repoPath: string): Promise<void> => {

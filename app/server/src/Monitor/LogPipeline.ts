@@ -1,12 +1,16 @@
 import { ComputerData, ForegroundItem, LogItem } from "./log";
 
+import { getFolders } from "../Repo/template";
 import os from "os";
 
 export default class LogPipeline {
   private previous: ForegroundItem | null = null;
   public readonly computerData: ComputerData;
+  public repoPath: string;
 
-  constructor() {
+  constructor(repoPath: string) {
+    this.repoPath = repoPath;
+
     this.computerData = {
       computerName: os.hostname(),
       osType: os.type(),
@@ -15,15 +19,23 @@ export default class LogPipeline {
     };
   }
 
-  private static keysToCheck: Array<keyof ForegroundItem> = [
-    "ExecutableName",
-    "ProcessName",
-    "WindowTitle",
-  ];
+  private write = (item: LogItem): void => {
+    if (!this.repoPath) {
+      throw Error("The repoPath has not been set for the LogPipeline.");
+    }
+
+    const date = new Date(item.startTimeStamp);
+    const { yearFolder, monthFolder, dayFile } = getFolders(
+      this.repoPath,
+      date,
+    );
+
+    console.log({ yearFolder, monthFolder, dayFile });
+  };
 
   private log = (previous: ForegroundItem, next: ForegroundItem): void => {
     // Construct the `LogItem`
-    const logItem: LogItem = {
+    const item: LogItem = {
       ...this.computerData,
       startTimeStamp: previous.TimeStamp,
       endTimeStamp: next.TimeStamp,
@@ -31,8 +43,7 @@ export default class LogPipeline {
       processName: previous.ProcessName,
       windowTitle: previous.WindowTitle,
     };
-
-    console.log(logItem);
+    this.write(item);
   };
 
   public push = (item: ForegroundItem): void => {

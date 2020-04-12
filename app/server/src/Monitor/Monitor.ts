@@ -10,8 +10,8 @@ export default class Monitor {
   private socket: WebSocket | undefined;
   private readonly logPipeline: LogPipeline;
 
-  constructor(server: http.Server) {
-    this.logPipeline = new LogPipeline();
+  constructor(server: http.Server, repoPath: string) {
+    this.logPipeline = new LogPipeline(repoPath);
     this.server = new Server({
       server,
       clientTracking: true,
