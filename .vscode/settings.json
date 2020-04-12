@@ -12,7 +12,7 @@
     "app/api/**/**.js.map": true,
     "app/helpers/**/**.d.ts": true,
     "app/helpers/**/**.d.ts.map": true,
-    "app/helpers/**/**.js": true,
+    "app/helpers/index*.js": false,
     "app/helpers/**/**.js.map": true
   }
 }

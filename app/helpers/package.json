@@ -10,7 +10,12 @@
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@types/node": "^13.11.1",
+    "@types/pify": "^3.0.2",
     "jest": "^25.2.4",
     "ts-jest": "^25.3.1"
+  },
+  "dependencies": {
+    "pify": "^5.0.0",
+    "steno": "^0.5.0"
   }
 }

@@ -1,4 +1,7 @@
 import fs from "fs";
+import pify from "pify";
+import steno from "steno";
+
 /**
  * Removes the last item if `item === ""`.
  * @param pieces
@@ -47,3 +50,9 @@ export const checkExists = async (path: string): Promise<boolean> => {
   }
 };
 
+// steno has atomic writing and race condition prevention
+const _writeFile = pify(steno.writeFile);
+
+export const writeFile = (path: string, data: string) => {
+  return _writeFile(path, data);
+};
