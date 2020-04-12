@@ -10,9 +10,11 @@ namespace monitor
         public string ExecutableName { get; }
         public string ProcessName { get; }
         public string WindowTitle { get; }
+        public DateTime TimeStamp { get; }
 
         public ForegroundItem(string executableName, string processName, string windowTitle)
         {
+            TimeStamp = DateTime.UtcNow;
             ExecutableName = executableName;
             ProcessName = processName;
             WindowTitle = windowTitle;

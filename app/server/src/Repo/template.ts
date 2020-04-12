@@ -2,25 +2,6 @@ import { addSeparator } from "@index/helpers";
 import path from "path";
 import { promises } from "fs";
 
-export interface LogTemplate {
-  computer: {
-    name: string;
-    os: string;
-  };
-  datetime: {
-    start: string;
-    end: string;
-  };
-  executable: {
-    name: string;
-    path: string;
-  };
-  document?: {
-    name: string;
-    path: string;
-  };
-}
-
 export const getFolders = (repoPath: string) => {
   repoPath = addSeparator(repoPath, path.sep);
 
