@@ -2,8 +2,8 @@ import { Settings, SettingsResult } from "@index/api/settings/schema";
 import { readSettings, settingsPath } from "./settings";
 
 import { homedir } from "os";
-import { promises } from "fs";
 import { validateData } from "./validate";
+import { writeFile } from "@index/helpers";
 
 export const getSettings = async (): Promise<SettingsResult> => {
   const data = await readSettings();
@@ -30,7 +30,7 @@ export const postSettings = async (
     }
   }
 
-  await promises.writeFile(settingsPath, JSON.stringify(settings));
+  await writeFile(settingsPath, JSON.stringify(settings));
 
   return errors;
 };
