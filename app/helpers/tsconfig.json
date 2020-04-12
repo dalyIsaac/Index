@@ -21,6 +21,12 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
-  }
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [
+      "../../node_modules/@types",
+      "node_modules/@types",
+      "../helpers/typings"
+    ]
+  },
+  "exclude": ["*.test.ts"]
 }
