@@ -1,3 +1,4 @@
+import fs from "fs";
 /**
  * Removes the last item if `item === ""`.
  * @param pieces
@@ -36,3 +37,13 @@ export const addSeparator = (path: string, separator: string): string => {
   }
   return newPath;
 };
+
+export const checkExists = async (path: string): Promise<boolean> => {
+  try {
+    await fs.promises.access(path);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
