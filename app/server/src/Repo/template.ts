@@ -1,4 +1,4 @@
-import { addSeparator, writeFile } from "@index/helpers";
+import { addSeparator, writeNewFile } from "@index/helpers";
 
 import path from "path";
 
@@ -12,12 +12,12 @@ export const getFolders = (repoPath: string, date: Date) => {
   const monthFolder = addSeparator(yearFolder, path.sep) + month;
 
   const day = date.getUTCDate();
-  const dayFile = addSeparator(monthFolder, path.sep) + day;
+  const dayFile = addSeparator(monthFolder, path.sep) + day + ".json";
 
   return { yearFolder, monthFolder, dayFile };
 };
 
 export const addReadme = async (repoPath: string): Promise<void> => {
   const readme = addSeparator(repoPath, path.sep) + "README.md";
-  await writeFile(readme, "Hello Index!");
+  await writeNewFile(readme, "Hello Index!");
 };

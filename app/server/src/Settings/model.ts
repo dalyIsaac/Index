@@ -3,7 +3,7 @@ import { readSettings, settingsPath } from "./settings";
 
 import { homedir } from "os";
 import { validateData } from "./validate";
-import { writeFile } from "@index/helpers";
+import { writeToFile } from "@index/helpers";
 
 export const getSettings = async (): Promise<SettingsResult> => {
   const data = await readSettings();
@@ -30,7 +30,7 @@ export const postSettings = async (
     }
   }
 
-  await writeFile(settingsPath, JSON.stringify(settings));
+  await writeToFile(settingsPath, JSON.stringify(settings));
 
   return errors;
 };
