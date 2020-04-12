@@ -38,7 +38,6 @@ export const getFolders = (repoPath: string) => {
 };
 
 export const addReadme = async (repoPath: string): Promise<void> => {
-  // TODO: Add proper README
   const readme = addSeparator(repoPath, path.sep) + "README.md";
   await promises.writeFile(readme, "Hello Index!");
 };

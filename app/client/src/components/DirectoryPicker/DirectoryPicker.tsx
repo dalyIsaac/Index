@@ -87,8 +87,6 @@ const DirectoryPicker = ({
     onUpdatedPath();
   }, [onUpdatedPath]);
 
-  useEffect(() => {}, []);
-
   const onChangeText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       updatePath(e.target.value);
@@ -109,7 +107,7 @@ const DirectoryPicker = ({
       // the final separator to expand. However, a mouse selection doesn't mean
       // expansion.
       const newPath = path.slice(0, path.length - 1);
-      updatePath(newPath); // TODO: Alter setPath
+      updatePath(newPath);
     },
     [updatePath],
   );

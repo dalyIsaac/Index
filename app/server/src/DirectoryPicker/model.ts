@@ -23,7 +23,7 @@ export const getDirs = async (
 ): Promise<{ dirs?: string[]; errors?: string[] }> => {
   try {
     if (path.length === 2 && path[path.length - 1] === ":") {
-      return { dirs: [] }; // TODO: This doesn't handle different drives in Windows
+      return { dirs: [] };
     }
     const files = await promises.readdir(path, {
       withFileTypes: true,

@@ -11,7 +11,7 @@ export const openRepo = async () => {
     onError: {
       // Initialize the repo
       command: "git init",
-      // TODO: onSuccess: Add README
     },
   });
+  addReadme(path);
 };

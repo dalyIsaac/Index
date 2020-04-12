@@ -18,7 +18,7 @@ describe("<DirectoryPicker />", () => {
   const getWrapper = (store: ReturnType<typeof initializeState>) => {
     return mount(
       <Provider store={store}>
-        <DirectoryPicker />
+        <DirectoryPicker height={"1000px"} />
       </Provider>,
     );
   };
@@ -90,6 +90,4 @@ describe("<DirectoryPicker />", () => {
     );
     expect(mockStore.dispatch).toHaveBeenNthCalledWith(3, addRoot("/"));
   });
-
-  // TODO: Test second useEffect
 });
